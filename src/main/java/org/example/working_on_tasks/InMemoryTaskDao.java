@@ -36,6 +36,7 @@ public class InMemoryTaskDao implements TaskDao {
         subTasks.put(subTask.getId(), subTask);
         return subTask.getId();
     }
+
     @Override
     public Task getTaskById(int id) {
         return tasks.get(id);
@@ -50,6 +51,7 @@ public class InMemoryTaskDao implements TaskDao {
     public SubTask getSubTasksById(int id) {
         return subTasks.get(id);
     }
+
     @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
