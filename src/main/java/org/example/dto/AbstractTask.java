@@ -1,6 +1,4 @@
-package org.example.all_tasks;
-
-import org.example.Status;
+package org.example.dto;
 
 public abstract class AbstractTask {
     private String name;

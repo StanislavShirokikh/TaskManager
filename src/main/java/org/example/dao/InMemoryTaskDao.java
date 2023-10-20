@@ -1,8 +1,9 @@
-package org.example.working_on_tasks;
+package org.example.dao;
 
-import org.example.all_tasks.Task;
-import org.example.all_tasks.Epic;
-import org.example.all_tasks.SubTask;
+import org.example.dto.Task;
+import org.example.dto.Epic;
+import org.example.dto.SubTask;
+import org.example.service.IdGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class InMemoryTaskDao implements TaskDao {
         subTasks.put(subTask.getId(), subTask);
         return subTask.getId();
     }
+
     @Override
     public Task getTaskById(int id) {
         return tasks.get(id);
@@ -50,6 +52,7 @@ public class InMemoryTaskDao implements TaskDao {
     public SubTask getSubTasksById(int id) {
         return subTasks.get(id);
     }
+
     @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);

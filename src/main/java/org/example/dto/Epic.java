@@ -1,6 +1,4 @@
-package org.example.all_tasks;
-
-import org.example.Status;
+package org.example.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +10,6 @@ public class Epic extends AbstractTask {
     }
     public List<Integer> getSubtasksId() {
         return subtasksId;
-    }
-    @Override
-    public Status getStatus() {
-        throw new RuntimeException("Эпик не должен рассчитывать статус");
     }
     @Override
     public String toString() {
