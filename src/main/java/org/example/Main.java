@@ -1,12 +1,11 @@
 package org.example;
 
-import org.example.all_tasks.Epic;
-import org.example.all_tasks.SubTask;
-import org.example.working_on_tasks.Manager;
+import org.example.dto.Epic;
+import org.example.service.manager.ManagerImpl;
 
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        ManagerImpl manager = new ManagerImpl();
         Epic epic1 = new Epic();
     }
 }

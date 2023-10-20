@@ -1,8 +1,9 @@
-package org.example.working_on_tasks;
+package org.example.dao;
 
-import org.example.all_tasks.Task;
-import org.example.all_tasks.Epic;
-import org.example.all_tasks.SubTask;
+import org.example.dto.Task;
+import org.example.dto.Epic;
+import org.example.dto.SubTask;
+import org.example.service.IdGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

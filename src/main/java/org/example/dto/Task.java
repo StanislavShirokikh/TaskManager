@@ -1,7 +1,4 @@
-package org.example.all_tasks;
-
-import org.example.Status;
-import org.example.all_tasks.AbstractTask;
+package org.example.dto;
 
 public class Task extends AbstractTask {
     @Override

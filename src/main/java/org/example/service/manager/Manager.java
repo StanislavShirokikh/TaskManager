@@ -1,10 +1,10 @@
-package org.example.working_on_tasks;
+package org.example.service.manager;
 
-import org.example.all_tasks.Task;
-import org.example.all_tasks.Epic;
-import org.example.all_tasks.SubTask;
+import org.example.dto.Epic;
+import org.example.dto.SubTask;
+import org.example.dto.Task;
 
-public interface TaskDao {
+public interface Manager {
     int saveTask(Task task);
     int saveEpic(Epic epic);
     int saveSubtask(SubTask subTask);

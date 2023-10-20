@@ -1,8 +1,4 @@
-package org.example.all_tasks;
-
-import org.example.Status;
-import org.example.all_tasks.AbstractTask;
-import org.example.all_tasks.Epic;
+package org.example.dto;
 
 public class SubTask extends AbstractTask {
     private Integer epicId;

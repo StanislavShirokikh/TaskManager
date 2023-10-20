@@ -1,4 +1,4 @@
-package org.example.working_on_tasks;
+package org.example.service;
 
 public class IdGenerator {
     private int sequence = 0;
