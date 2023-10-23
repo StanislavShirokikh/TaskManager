@@ -10,153 +10,115 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManagerImplTest {
-    private Manager manager;
-    private Map<Integer, Task> tasks;
-    private Map<Integer, Epic> epics;
-    private Map<Integer, SubTask> subtasks;
-    private Task task;
-    private Epic epic;
-    private SubTask subTask;
-    private IdGenerator taskIdGenerator;
-    private IdGenerator epicIdGenerator;
-    private IdGenerator subtaskIdGenerator;
-
-    @BeforeEach
-    void setUp() {
-        manager = new ManagerImpl();
-
-        tasks = manager.getTasks();
-        epics = manager.getEpics();
-        subtasks = manager.getSubTasks();
-
-        task = new Task();
-        task.setName("task");
-        task.setDescription("task description");
-        task.setStatus(Status.NEW);
+    private Manager manager = new ManagerImpl();
 
 
-        epic = new Epic();
-        epic.setName("epic");
-        epic.setDescription("epic description");
-
-        subTask = new SubTask();
-        subTask.setName("subtask");
-        subTask.setDescription("subtask description");
-        subTask.setStatus(Status.NEW);
-
-        taskIdGenerator = new IdGenerator();
-        epicIdGenerator = new IdGenerator();
-        subtaskIdGenerator = new IdGenerator();
-
-//        task.setId(taskIdGenerator.getSequence());
-//        epic.setId(epicIdGenerator.getSequence());
-//        subTask.setId(subtaskIdGenerator.getSequence());
-    }
     @Test
     @DisplayName("Успешное сохранение Task")
     void saveTask() {
         Task task = new Task();
-        int actual = manager.saveTask(task);
-        int actualSizeMap = this.tasks.size();
+        task.setName("name");
+        task.setDescription("description");
+        task.setStatus(Status.NEW);
+        int actualId = manager.saveTask(task);
+        Task actualTask = manager.getTaskById(actualId);
 
-        Map<Integer, Task> tasks = new HashMap<>();
-        IdGenerator taskIdGenerator = new IdGenerator();
-        task.setId(taskIdGenerator.getSequence());
-        tasks.put(task.getId(), task);
-        int expected = task.getId();
-        int expectedSizeMap = tasks.size();
-
-        assertEquals(expected, actual);
-        assertEquals(expectedSizeMap, actualSizeMap);
+        assertEquals(task.getName(), actualTask.getName());
+        assertEquals(task.getDescription(), actualTask.getDescription());
+        assertEquals(task.getStatus(), actualTask.getStatus());
+        assertEquals(task.getId(), actualTask.getId());
     }
 
-
-
+    @Test
+    void getTaskWithBadID() {
+        Task actualTask = manager.getTaskById(-5);
+        assertNull(actualTask);
+    }
     @Test
     void saveEpic() {
         Epic epic = new Epic();
-        int actual = manager.saveEpic(epic);
+        epic.setName("name");
+        epic.setDescription("description");
+        int actualId = manager.saveEpic(epic);
 
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask description");
+        subTask1.setStatus(Status.NEW);
+        subTask1.setEpicId(epic.getId());
+        manager.saveSubtask(subTask1);
 
-        Map<Integer, Epic> epics = new HashMap<>();
-        IdGenerator epicIdGenerator = new IdGenerator();
-        epic.setId(epicIdGenerator.getSequence());
-        epics.put(epic.getId(), epic);
-        int expected = epic.getId();
-        assertEquals(expected, actual);
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.NEW);
+        subTask2.setEpicId(epic.getId());
+        manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        Epic actualEpic = manager.getEpicById(actualId);
+
+        List<Integer> expectedList = epic.getSubtasksId();
+        List<Integer> actualList = actualEpic.getSubtasksId();
+
+        Collections.sort(expectedList);
+        Collections.sort(actualList);
+
+        assertEquals(epic.getName(), actualEpic.getName());
+        assertEquals(epic.getDescription(), actualEpic.getDescription());
+        assertEquals(epic.getId(), actualEpic.getId());
+        assertEquals(Status.NEW, actualEpic.getStatus());
+        assertEquals(expectedList, actualList);
     }
 
     @Test
     void saveSubtask() {
-        SubTask subTask = new SubTask();
-        int actual = manager.saveSubtask(subTask);
-
-        Map<Integer, SubTask> subTasks = new HashMap<>();
-        IdGenerator subTaskIdGenerator = new IdGenerator();
-        subTask.setId(subTaskIdGenerator.getSequence());
-        subTasks.put(subTask.getId(), subTask);
-        int expected = subTask.getId();
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getTaskById() {
-        Task task = new Task();
-        manager.saveTask(task);
-        Task actual = manager.getTaskById(task.getId());
-
-        Map<Integer, Task> tasks = new HashMap<>();
-        IdGenerator taskIdGenerator = new IdGenerator();
-        task.setId(taskIdGenerator.getSequence());
-        tasks.put(task.getId(), task);
-        Task expected = tasks.get(task.getId());
-
-        assertEquals(expected, actual);
-    }
-    @Test
-    void getEpicById() {
         Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("epic description");
         manager.saveEpic(epic);
-        Epic actual = manager.getEpicById(epic.getId());
 
-        Map<Integer, Epic> epics = new HashMap<>();
-        IdGenerator epicIdGenerator = new IdGenerator();
-        epic.setId(epicIdGenerator.getSequence());
-        epics.put(epic.getId(), epic);
-        Epic expected = epics.get(epic.getId());
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void getSubTasksById() {
         SubTask subTask = new SubTask();
-        manager.saveSubtask(subTask);
-        SubTask actual  = manager.getSubTasksById(subTask.getId());
+        subTask.setName("subtask");
+        subTask.setDescription("description");
+        subTask.setStatus(Status.NEW);
+        subTask.setEpicId(epic.getId());
+        int actualId = manager.saveSubtask(subTask);
 
-        Map<Integer, SubTask> subTasks = new HashMap<>();
-        IdGenerator subTaskIdGenerator = new IdGenerator();
-        subTask.setId(subTaskIdGenerator.getSequence());
-        subTasks.put(subTask.getId(), subTask);
-        SubTask expected = subTasks.get(subTask.getId());
-        assertEquals(expected, actual);
+        SubTask actualSubtask = manager.getSubTasksById(actualId);
+
+        assertEquals(subTask.getName(), actualSubtask.getName());
+        assertEquals(subTask.getDescription(), actualSubtask.getDescription());
+        assertEquals(subTask.getStatus(), actualSubtask.getStatus());
+        assertEquals(subTask.getEpicId(), actualSubtask.getEpicId());
     }
-
     @Test
     void updateTask() {
-        manager.saveTask(this.task);
         Task task = new Task();
-        task.setId(this.task.getId());
-        int actualSizeMap = tasks.size();
-        manager.updateTask(task);
-        int expectedSizeMap = tasks.size();
-        assertEquals(expectedSizeMap, actualSizeMap);
+        task.setName("name");
+        task.setDescription("description");
+        task.setStatus(Status.IN_PROGRESS);
+        int taskId = manager.saveTask(task);
+
+        Task task1 = new Task();
+        task1.setName("new name");
+        task1.setDescription("new description");
+        task1.setStatus(Status.NEW);
+        task1.setId(taskId);
+
+        manager.updateTask(task1);
+
+        Task actualTask = manager.getTaskById(taskId);
+        assertEquals(task1.getName(), actualTask.getName());
+        assertEquals(task1.getDescription(), actualTask.getDescription());
+        assertEquals(task1.getStatus(), actualTask.getStatus());
     }
 
     @Test
