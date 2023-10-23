@@ -4,6 +4,8 @@ import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
 
+import java.util.Map;
+
 public interface Manager {
     int saveTask(Task task);
     int saveEpic(Epic epic);
@@ -17,4 +19,7 @@ public interface Manager {
     void removeTaskById(int id);
     void removeEpicById(int id);
     void removeSubTaskById(int id);
+    Map<Integer, Task> getTasks();
+    Map<Integer, Epic> getEpics();
+    Map<Integer, SubTask> getSubTasks();
 }

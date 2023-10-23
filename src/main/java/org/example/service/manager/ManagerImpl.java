@@ -8,6 +8,7 @@ import org.example.dto.Epic;
 import org.example.dto.SubTask;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,6 +78,21 @@ public class ManagerImpl implements Manager {
         taskDao.removeSubTaskById(id);
     }
 
+
+    @Override
+    public Map<Integer, Task> getTasks() {
+        return taskDao.getTasks();
+    }
+
+    @Override
+    public Map<Integer, Epic> getEpics() {
+        return taskDao.getEpics();
+    }
+
+    @Override
+    public Map<Integer, SubTask> getSubTasks() {
+        return taskDao.getSubTasks();
+    }
 
     private Status getEpicStatus(Epic epic) {
         List<SubTask> list = getSubtasks(epic);

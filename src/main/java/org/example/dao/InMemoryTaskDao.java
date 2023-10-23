@@ -82,4 +82,19 @@ public class InMemoryTaskDao implements TaskDao {
     public void removeSubTaskById(int id) {
         epics.remove(id);
     }
+
+    @Override
+    public Map<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    @Override
+    public Map<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    @Override
+    public Map<Integer, SubTask> getSubTasks() {
+        return subTasks;
+    }
 }
