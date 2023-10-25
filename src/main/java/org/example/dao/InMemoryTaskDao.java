@@ -6,6 +6,7 @@ import org.example.dto.SubTask;
 import org.example.service.IdGenerator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskDao implements TaskDao {
@@ -75,26 +76,24 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void removeEpicById(int id) {
-        epics.remove(id);
+        Epic epic = getEpicById(id);
+        List<Integer> subTasksId = epic.getSubtasksId();
+        if (!subTasksId.isEmpty()) {
+            for (Integer integer : subTasksId) {
+                subTasks.remove(integer);
+            }
+            epics.remove(id);
+        } else {
+            epics.remove(id);
+        }
     }
-
     @Override
     public void removeSubTaskById(int id) {
-        epics.remove(id);
-    }
-
-    @Override
-    public Map<Integer, Task> getTasks() {
-        return tasks;
-    }
-
-    @Override
-    public Map<Integer, Epic> getEpics() {
-        return epics;
-    }
-
-    @Override
-    public Map<Integer, SubTask> getSubTasks() {
-        return subTasks;
+        SubTask subTask = getSubTasksById(id);
+        int epicId = subTask.getEpicId();
+        Epic epic = getEpicById(epicId);
+        List<Integer> subTasksId = epic.getSubtasksId();
+        subTasksId.remove(id);
+        subTasks.remove(id);
     }
 }

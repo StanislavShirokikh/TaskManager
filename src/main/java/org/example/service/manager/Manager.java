@@ -19,7 +19,4 @@ public interface Manager {
     void removeTaskById(int id);
     void removeEpicById(int id);
     void removeSubTaskById(int id);
-    Map<Integer, Task> getTasks();
-    Map<Integer, Epic> getEpics();
-    Map<Integer, SubTask> getSubTasks();
 }

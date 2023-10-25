@@ -15,15 +15,14 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManagerImplTest {
-    private Manager manager = new ManagerImpl();
-
+    private final Manager manager = new ManagerImpl();
 
     @Test
     @DisplayName("Успешное сохранение Task")
     void saveTask() {
         Task task = new Task();
-        task.setName("name");
-        task.setDescription("description");
+        task.setName("task");
+        task.setDescription("task description");
         task.setStatus(Status.NEW);
         int actualId = manager.saveTask(task);
         Task actualTask = manager.getTaskById(actualId);
@@ -35,20 +34,23 @@ class ManagerImplTest {
     }
 
     @Test
+    @DisplayName("Запрос Task с несуществующим идентификатором")
     void getTaskWithBadID() {
         Task actualTask = manager.getTaskById(-5);
         assertNull(actualTask);
     }
+
     @Test
+    @DisplayName("Успешное сохранение Epic")
     void saveEpic() {
         Epic epic = new Epic();
-        epic.setName("name");
-        epic.setDescription("description");
+        epic.setName("epic");
+        epic.setDescription("epic description");
         int actualId = manager.saveEpic(epic);
 
         SubTask subTask1 = new SubTask();
         subTask1.setName("subtask1");
-        subTask1.setDescription("subtask description");
+        subTask1.setDescription("subtask1 description");
         subTask1.setStatus(Status.NEW);
         subTask1.setEpicId(epic.getId());
         manager.saveSubtask(subTask1);
@@ -79,6 +81,14 @@ class ManagerImplTest {
     }
 
     @Test
+    @DisplayName("Запрос Epic с несуществующим идентификатором")
+    void getEpicWithBadId() {
+        Epic actualEpic = manager.getEpicById(-7);
+        assertNull(actualEpic);
+    }
+
+    @Test
+    @DisplayName("Успешное сохранение Subtask")
     void saveSubtask() {
         Epic epic = new Epic();
         epic.setName("epic");
@@ -87,7 +97,7 @@ class ManagerImplTest {
 
         SubTask subTask = new SubTask();
         subTask.setName("subtask");
-        subTask.setDescription("description");
+        subTask.setDescription("subtask description");
         subTask.setStatus(Status.NEW);
         subTask.setEpicId(epic.getId());
         int actualId = manager.saveSubtask(subTask);
@@ -99,45 +109,242 @@ class ManagerImplTest {
         assertEquals(subTask.getStatus(), actualSubtask.getStatus());
         assertEquals(subTask.getEpicId(), actualSubtask.getEpicId());
     }
+
     @Test
+    @DisplayName("Запрос Subtask с несуществующим идентификатором")
+    void getSubtaskWithBadId() {
+        SubTask subTask = manager.getSubTasksById(-7);
+        assertNull(subTask);
+    }
+
+    @Test
+    @DisplayName("Успешное обновление Task")
     void updateTask() {
         Task task = new Task();
-        task.setName("name");
-        task.setDescription("description");
+        task.setName("task");
+        task.setDescription("task description");
         task.setStatus(Status.IN_PROGRESS);
         int taskId = manager.saveTask(task);
 
-        Task task1 = new Task();
-        task1.setName("new name");
-        task1.setDescription("new description");
-        task1.setStatus(Status.NEW);
-        task1.setId(taskId);
+        Task updateTask = new Task();
+        updateTask.setName("updateTask");
+        updateTask.setDescription("updateTask description");
+        updateTask.setStatus(Status.NEW);
+        updateTask.setId(taskId);
 
-        manager.updateTask(task1);
+        manager.updateTask(updateTask);
 
         Task actualTask = manager.getTaskById(taskId);
-        assertEquals(task1.getName(), actualTask.getName());
-        assertEquals(task1.getDescription(), actualTask.getDescription());
-        assertEquals(task1.getStatus(), actualTask.getStatus());
+        assertEquals(updateTask.getName(), actualTask.getName());
+        assertEquals(updateTask.getDescription(), actualTask.getDescription());
+        assertEquals(updateTask.getStatus(), actualTask.getStatus());
     }
 
     @Test
+    @DisplayName("Успешное обновление Epic")
     void updateEpic() {
+        Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("description");
+        int epicId = manager.saveEpic(epic);
+
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask1 description");
+        subTask1.setStatus(Status.NEW);
+        subTask1.setEpicId(epic.getId());
+        manager.saveSubtask(subTask1);
+
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.NEW);
+        subTask2.setEpicId(epic.getId());
+        manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        Epic updateEpic = new Epic();
+        updateEpic.setName("updateEpic name");
+        updateEpic.setDescription("updateEpic description");
+        updateEpic.setId(epicId);
+
+        SubTask subTask3 = new SubTask();
+        subTask3.setName("subtask3 name");
+        subTask3.setDescription("subtask3 description");
+        subTask3.setStatus(Status.IN_PROGRESS);
+        subTask3.setEpicId(updateEpic.getId());
+        manager.saveSubtask(subTask3);
+
+        updateEpic.addSubtaskId(subTask3.getId());
+
+        manager.updateEpic(updateEpic);
+        Epic actualEpic = manager.getEpicById(epicId);
+
+        assertEquals(updateEpic.getName(), actualEpic.getName());
+        assertEquals(updateEpic.getDescription(), actualEpic.getDescription());
+        assertEquals(Status.IN_PROGRESS, actualEpic.getStatus());
+        assertEquals(updateEpic.getSubtasksId(), actualEpic.getSubtasksId());
     }
 
     @Test
+    @DisplayName("Успешное обновление Subtask")
     void updateSubTask() {
+        Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("epic description");
+        manager.saveEpic(epic);
+
+        SubTask subTask = new SubTask();
+        subTask.setName("subtask");
+        subTask.setDescription("subtask description");
+        subTask.setStatus(Status.DONE);
+        subTask.setEpicId(epic.getId());
+        int subTaskId = manager.saveSubtask(subTask);
+
+        SubTask updateSubtask = new SubTask();
+        updateSubtask.setName("updateSubTask name");
+        updateSubtask.setDescription("updateSubtask description");
+        updateSubtask.setStatus(Status.NEW);
+        updateSubtask.setId(subTaskId);
+        updateSubtask.setEpicId(epic.getId());
+
+        manager.updateSubTask(updateSubtask);
+        SubTask actualSubtask = manager.getSubTasksById(subTaskId);
+
+        assertEquals(updateSubtask.getName(), actualSubtask.getName());
+        assertEquals(updateSubtask.getDescription(), actualSubtask.getDescription());
+        assertEquals(updateSubtask.getStatus(), actualSubtask.getStatus());
+        assertEquals(updateSubtask.getEpicId(), actualSubtask.getEpicId());
     }
 
     @Test
+    @DisplayName("Успешное удаление Task")
     void removeTaskById() {
+        Task task = new Task();
+        task.setName("task");
+        task.setDescription("description");
+        task.setStatus(Status.DONE);
+        int taskId = manager.saveTask(task);
+
+        manager.removeTaskById(taskId);
+
+        Task actualTask = manager.getTaskById(taskId);
+        assertNull(actualTask);
     }
 
     @Test
+    @DisplayName("Успешное удаление Epic")
     void removeEpicById() {
+        Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("epic description");
+        int epicId = manager.saveEpic(epic);
+
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask1 description");
+        subTask1.setStatus(Status.NEW);
+        subTask1.setEpicId(epic.getId());
+        int subtask1Id = manager.saveSubtask(subTask1);
+
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.NEW);
+        subTask2.setEpicId(epic.getId());
+        int subtask2Id = manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        manager.removeEpicById(epicId);
+
+        Epic actualEpic = manager.getEpicById(epicId);
+        assertNull(actualEpic);
+        SubTask actualSubTask1 = manager.getSubTasksById(subtask1Id);
+        SubTask actualSubtask2 = manager.getSubTasksById(subtask2Id);
+        assertNull(actualSubTask1);
+        assertNull(actualSubtask2);
     }
 
     @Test
+    @DisplayName("Успешное удаление Subtask")
     void removeSubTaskById() {
+        Epic epic = new Epic();
+        epic.setName("name");
+        epic.setDescription("description");
+        int epicId = manager.saveEpic(epic);
+
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask description");
+        subTask1.setStatus(Status.NEW);
+        subTask1.setEpicId(epic.getId());
+        manager.saveSubtask(subTask1);
+
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.NEW);
+        subTask2.setEpicId(epic.getId());
+        int subtask2Id = manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        manager.removeSubTaskById(subtask2Id);
+
+        SubTask actualSubTask = manager.getSubTasksById(subtask2Id);
+        assertNull(actualSubTask);
+        Epic actualEpic = manager.getEpicById(epicId);
+        boolean isNotContains = !actualEpic.getSubtasksId().contains(subtask2Id);
+        assertTrue(isNotContains);
+    }
+
+    @Test
+    @DisplayName("Статус Epic рассчитывается верно")
+    void getStatusOfEpic() {
+        Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("epic description");
+        int actualId = manager.saveEpic(epic);
+
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask1 description");
+        subTask1.setStatus(Status.NEW);
+        subTask1.setEpicId(epic.getId());
+        manager.saveSubtask(subTask1);
+
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.NEW);
+        subTask2.setEpicId(epic.getId());
+        manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        Epic actualEpic1 = manager.getEpicById(actualId);
+        assertEquals(Status.NEW, actualEpic1.getStatus());
+
+        subTask1.setStatus(Status.IN_PROGRESS);
+        subTask2.setStatus(Status.DONE);
+        Epic actualEpic2 = manager.getEpicById(actualId);
+        assertEquals(Status.IN_PROGRESS, actualEpic2.getStatus());
+
+        subTask1.setStatus(Status.DONE);
+        Epic actualEpic3 = manager.getEpicById(actualId);
+        assertEquals(Status.DONE, actualEpic3.getStatus());
+
+        Epic epicWithoutSubtasks = new Epic();
+        epicWithoutSubtasks.setName("epicWithoutSubtask");
+        epicWithoutSubtasks.setDescription("epicWithoutSubtask description");
+        int epicId = manager.saveEpic(epicWithoutSubtasks);
+        Epic newEpic = manager.getEpicById(epicId);
+        assertEquals(Status.NEW, newEpic.getStatus());
     }
 }
