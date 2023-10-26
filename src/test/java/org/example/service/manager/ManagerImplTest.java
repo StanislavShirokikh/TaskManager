@@ -299,13 +299,13 @@ class ManagerImplTest {
         SubTask actualSubTask = manager.getSubTasksById(subtask2Id);
         assertNull(actualSubTask);
         Epic actualEpic = manager.getEpicById(epicId);
-        boolean isNotContains = !actualEpic.getSubtasksId().contains(subtask2Id);
-        assertTrue(isNotContains);
+        assertNotNull(actualEpic);
+        assertFalse(actualEpic.getSubtasksId().contains(subtask2Id));
     }
 
     @Test
     @DisplayName("Статус Epic рассчитывается верно")
-    void getStatusOfEpic() {
+    void getStatusOfEpicMustBeNew() {
         Epic epic = new Epic();
         epic.setName("epic");
         epic.setDescription("epic description");
@@ -330,21 +330,71 @@ class ManagerImplTest {
 
         Epic actualEpic1 = manager.getEpicById(actualId);
         assertEquals(Status.NEW, actualEpic1.getStatus());
+    }
 
-        subTask1.setStatus(Status.IN_PROGRESS);
-        subTask2.setStatus(Status.DONE);
-        Epic actualEpic2 = manager.getEpicById(actualId);
-        assertEquals(Status.IN_PROGRESS, actualEpic2.getStatus());
-
-        subTask1.setStatus(Status.DONE);
-        Epic actualEpic3 = manager.getEpicById(actualId);
-        assertEquals(Status.DONE, actualEpic3.getStatus());
-
+    @Test
+    void getEpicWithoutSubTaskMustBeNew() {
         Epic epicWithoutSubtasks = new Epic();
         epicWithoutSubtasks.setName("epicWithoutSubtask");
         epicWithoutSubtasks.setDescription("epicWithoutSubtask description");
         int epicId = manager.saveEpic(epicWithoutSubtasks);
         Epic newEpic = manager.getEpicById(epicId);
         assertEquals(Status.NEW, newEpic.getStatus());
+    }
+
+    @Test
+    void getStatusOfEpicMustBeInProgress() {
+        Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("epic description");
+        int actualId = manager.saveEpic(epic);
+
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask1 description");
+        subTask1.setStatus(Status.IN_PROGRESS);
+        subTask1.setEpicId(epic.getId());
+        manager.saveSubtask(subTask1);
+
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.NEW);
+        subTask2.setEpicId(epic.getId());
+        manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        Epic actualEpic1 = manager.getEpicById(actualId);
+        assertEquals(Status.IN_PROGRESS, actualEpic1.getStatus());
+    }
+
+    @Test
+    void getStatusOfEpicMustBeDone() {
+        Epic epic = new Epic();
+        epic.setName("epic");
+        epic.setDescription("epic description");
+        int actualId = manager.saveEpic(epic);
+
+        SubTask subTask1 = new SubTask();
+        subTask1.setName("subtask1");
+        subTask1.setDescription("subtask1 description");
+        subTask1.setStatus(Status.DONE);
+        subTask1.setEpicId(epic.getId());
+        manager.saveSubtask(subTask1);
+
+        SubTask subTask2 = new SubTask();
+        subTask2.setName("subtask2");
+        subTask2.setDescription("subtask2 description");
+        subTask2.setStatus(Status.DONE);
+        subTask2.setEpicId(epic.getId());
+        manager.saveSubtask(subTask2);
+
+        epic.addSubtaskId(subTask1.getId());
+        epic.addSubtaskId(subTask2.getId());
+
+        Epic actualEpic1 = manager.getEpicById(actualId);
+        assertEquals(Status.DONE, actualEpic1.getStatus());
     }
 }
