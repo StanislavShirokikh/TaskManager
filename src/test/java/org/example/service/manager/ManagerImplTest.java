@@ -27,7 +27,7 @@ class ManagerImplTest {
         int actualId = manager.saveTask(task);
         Task actualTask = manager.getTaskById(actualId);
 
-        assertNotEquals(task.getName(), actualTask.getName());
+        assertEquals(task.getName(), actualTask.getName());
         assertEquals(task.getDescription(), actualTask.getDescription());
         assertEquals(task.getStatus(), actualTask.getStatus());
         assertEquals(task.getId(), actualTask.getId());
