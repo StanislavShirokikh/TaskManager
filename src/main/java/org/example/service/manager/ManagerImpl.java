@@ -8,6 +8,7 @@ import org.example.dto.Epic;
 import org.example.dto.SubTask;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +39,11 @@ public class ManagerImpl implements Manager {
     @Override
     public Epic getEpicById(int id) {
         Epic epic = taskDao.getEpicById(id);
-        epic.setStatus(getEpicStatus(epic));
-        return epic;
+        if (epic != null) {
+            epic.setStatus(getEpicStatus(epic));
+            return epic;
+        }
+        return null;
     }
 
     @Override
@@ -76,31 +80,29 @@ public class ManagerImpl implements Manager {
     public void removeSubTaskById(int id) {
         taskDao.removeSubTaskById(id);
     }
-
-
     private Status getEpicStatus(Epic epic) {
-        List<SubTask> list = getSubtasks(epic);
+            List<SubTask> list = getSubtasks(epic);
 
-        Set<Status> hashSet = list.stream()
-                .map(SubTask::getStatus)
-                .collect(Collectors.toSet());
+            Set<Status> hashSet = list.stream()
+                    .map(SubTask::getStatus)
+                    .collect(Collectors.toSet());
 
-        if (hashSet.size() == 1 && hashSet.contains(Status.NEW) || epic.getSubtasksId().isEmpty()) {
-            return Status.NEW;
-        } else if (hashSet.size() == 1 && hashSet.contains(Status.DONE)) {
-            return Status.DONE;
-        } else {
-            return Status.IN_PROGRESS;
-        }
+            if (hashSet.size() == 1 && hashSet.contains(Status.NEW) || epic.getSubtasksId().isEmpty()) {
+                return Status.NEW;
+            } else if (hashSet.size() == 1 && hashSet.contains(Status.DONE)) {
+                return Status.DONE;
+            } else {
+                return Status.IN_PROGRESS;
+            }
     }
 
     private List<SubTask> getSubtasks(Epic epic) {
-        List<Integer> list = epic.getSubtasksId();
-        List<SubTask> subTasks = new ArrayList<>();
-        for (Integer integer : list) {
-            SubTask subTask = taskDao.getSubTasksById(integer);
-            subTasks.add(subTask);
-        }
-        return subTasks;
+            List<Integer> list = epic.getSubtasksId();
+            List<SubTask> subTasks = new ArrayList<>();
+            for (Integer integer : list) {
+                SubTask subTask = taskDao.getSubTasksById(integer);
+                subTasks.add(subTask);
+            }
+            return subTasks;
     }
 }

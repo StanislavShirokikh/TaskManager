@@ -4,6 +4,8 @@ import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
 
+import java.util.Map;
+
 public interface Manager {
     int saveTask(Task task);
     int saveEpic(Epic epic);
