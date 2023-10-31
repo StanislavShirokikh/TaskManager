@@ -1,8 +1,6 @@
 package org.example.dao;
 
-import org.example.dto.Task;
-import org.example.dto.Epic;
-import org.example.dto.SubTask;
+import org.example.dto.*;
 
 import java.util.Map;
 

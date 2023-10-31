@@ -1,15 +1,13 @@
 package org.example.service.manager;
 
-import org.example.dto.Epic;
-import org.example.dto.SubTask;
-import org.example.dto.Task;
+import org.example.dto.*;
 
 import java.util.Map;
 
 public interface Manager {
-    int saveTask(Task task);
-    int saveEpic(Epic epic);
-    int saveSubtask(SubTask subTask);
+    int saveTask(SaveTaskDto saveTaskDto);
+    int saveEpic(SaveEpicDto saveEpicDto);
+    int saveSubtask(SaveSubTaskDto saveSubTaskDto);
     Task getTaskById(int id);
     Epic getEpicById(int id);
     SubTask getSubTasksById(int id);

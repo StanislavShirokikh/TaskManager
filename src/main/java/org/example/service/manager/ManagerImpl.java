@@ -2,10 +2,8 @@ package org.example.service.manager;
 
 import org.example.dao.InMemoryTaskDao;
 import org.example.dao.TaskDao;
-import org.example.dto.Status;
-import org.example.dto.Task;
-import org.example.dto.Epic;
-import org.example.dto.SubTask;
+import org.example.dto.*;
+import org.example.service.Converter;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,17 +14,23 @@ import java.util.stream.Collectors;
 public class ManagerImpl implements Manager {
     private final TaskDao taskDao = new InMemoryTaskDao();
     @Override
-    public int saveTask(Task task) {
+    public int saveTask(SaveTaskDto saveTaskDto) {
+        Task task = Converter.convertToTask(saveTaskDto);
+        task.setStatus(Status.NEW);
         return taskDao.saveTask(task);
     }
 
     @Override
-    public int saveEpic(Epic epic) {
+    public int saveEpic(SaveEpicDto saveEpicDto) {
+        Epic epic = Converter.converterToEpic(saveEpicDto);
+        epic.setStatus(Status.NEW);
         return taskDao.saveEpic(epic);
     }
 
     @Override
-    public int saveSubtask(SubTask subTask) {
+    public int saveSubtask(SaveSubTaskDto saveSubTaskDto) {
+        SubTask subTask = Converter.converterToSubTask(saveSubTaskDto);
+        subTask.setStatus(Status.NEW);
         return taskDao.saveSubtask(subTask);
     }
 

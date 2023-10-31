@@ -1,8 +1,7 @@
 package org.example.dao;
 
-import org.example.dto.Task;
-import org.example.dto.Epic;
-import org.example.dto.SubTask;
+import org.example.dto.*;
+import org.example.service.Converter;
 import org.example.service.IdGenerator;
 
 import java.util.HashMap;
@@ -16,7 +15,6 @@ public class InMemoryTaskDao implements TaskDao {
     private final IdGenerator taskIdGenerator = new IdGenerator();
     private final IdGenerator epicIdGenerator = new IdGenerator();
     private final IdGenerator subtaskIdGenerator = new IdGenerator();
-
 
     @Override
     public int saveTask(Task task) {

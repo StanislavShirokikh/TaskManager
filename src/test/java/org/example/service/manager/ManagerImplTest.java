@@ -1,9 +1,6 @@
 package org.example.service.manager;
 
-import org.example.dto.Epic;
-import org.example.dto.Status;
-import org.example.dto.SubTask;
-import org.example.dto.Task;
+import org.example.dto.*;
 import org.example.service.IdGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,17 +17,16 @@ class ManagerImplTest {
     @Test
     @DisplayName("Успешное сохранение Task")
     void saveTask() {
-        Task task = new Task();
-        task.setName("task");
-        task.setDescription("task description");
-        task.setStatus(Status.NEW);
-        int actualId = manager.saveTask(task);
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        int actualId = manager.saveTask(saveTaskDto);
         Task actualTask = manager.getTaskById(actualId);
 
-        assertEquals(task.getName(), actualTask.getName());
-        assertEquals(task.getDescription(), actualTask.getDescription());
-        assertEquals(task.getStatus(), actualTask.getStatus());
-        assertEquals(task.getId(), actualTask.getId());
+        assertEquals(saveTaskDto.getName(), actualTask.getName());
+        assertEquals(saveTaskDto.getDescription(), actualTask.getDescription());
+        assertEquals(Status.NEW, actualTask.getStatus());
+        assertEquals(actualId, actualTask.getId());
     }
 
     @Test
@@ -43,10 +39,10 @@ class ManagerImplTest {
     @Test
     @DisplayName("Успешное сохранение Epic")
     void saveEpic() {
-        Epic epic = new Epic();
-        epic.setName("epic");
-        epic.setDescription("epic description");
-        int actualId = manager.saveEpic(epic);
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int actualId = manager.saveEpic(saveEpicDto);
 
         SubTask subTask1 = new SubTask();
         subTask1.setName("subtask1");
