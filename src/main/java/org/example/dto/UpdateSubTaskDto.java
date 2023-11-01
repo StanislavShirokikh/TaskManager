@@ -1,21 +1,22 @@
 package org.example.dto;
 
-public class SaveSubTaskDto extends AbstractSaveTaskDto {
-    private Integer epicId;
+public class UpdateSubTaskDto extends AbstractUpdateTaskDto{
+    private int epicId;
 
-    public Integer getEpicId() {
+    public int getEpicId() {
         return epicId;
     }
 
-    public void setEpicId(Integer epicId) {
+    public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
 
     @Override
     public String toString() {
-        return "SaveSubtaskTaskDto{" +
+        return "UpdateSubTaskDto{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
                 '}';
     }
 }

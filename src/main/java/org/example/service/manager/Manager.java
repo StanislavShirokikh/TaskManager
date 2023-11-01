@@ -11,9 +11,9 @@ public interface Manager {
     Task getTaskById(int id);
     Epic getEpicById(int id);
     SubTask getSubTasksById(int id);
-    void updateTask(Task task);
-    void updateEpic(Epic epic);
-    void updateSubTask(SubTask subTask);
+    void updateTask(UpdateTaskDto updateTaskDto);
+    void updateEpic(UpdateEpicDto updateEpicDto);
+    void updateSubTask(UpdateSubTaskDto updateSubTaskDto);
     void removeTaskById(int id);
     void removeEpicById(int id);
     void removeSubTaskById(int id);

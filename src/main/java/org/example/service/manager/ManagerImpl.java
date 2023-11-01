@@ -2,11 +2,19 @@ package org.example.service.manager;
 
 import org.example.dao.InMemoryTaskDao;
 import org.example.dao.TaskDao;
-import org.example.dto.*;
+import org.example.dto.Epic;
+import org.example.dto.SaveEpicDto;
+import org.example.dto.SaveSubTaskDto;
+import org.example.dto.SaveTaskDto;
+import org.example.dto.Status;
+import org.example.dto.SubTask;
+import org.example.dto.Task;
+import org.example.dto.UpdateEpicDto;
+import org.example.dto.UpdateSubTaskDto;
+import org.example.dto.UpdateTaskDto;
 import org.example.service.Converter;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,14 +24,12 @@ public class ManagerImpl implements Manager {
     @Override
     public int saveTask(SaveTaskDto saveTaskDto) {
         Task task = Converter.convertToTask(saveTaskDto);
-        task.setStatus(Status.NEW);
         return taskDao.saveTask(task);
     }
 
     @Override
     public int saveEpic(SaveEpicDto saveEpicDto) {
         Epic epic = Converter.converterToEpic(saveEpicDto);
-        epic.setStatus(Status.NEW);
         return taskDao.saveEpic(epic);
     }
 
@@ -56,17 +62,20 @@ public class ManagerImpl implements Manager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(UpdateTaskDto updateTaskDto) {
+        Task task = Converter.convertToTask(updateTaskDto);
         taskDao.updateTask(task);
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public void updateEpic(UpdateEpicDto updateEpicDto) {
+        Epic epic = Converter.convertToEpic(updateEpicDto);
         taskDao.updateEpic(epic);
     }
 
     @Override
-    public void updateSubTask(SubTask subTask) {
+    public void updateSubTask(UpdateSubTaskDto updateSubTaskDto) {
+        SubTask subTask = Converter.converterToSubTask(updateSubTaskDto);
         taskDao.updateSubTask(subTask);
     }
 

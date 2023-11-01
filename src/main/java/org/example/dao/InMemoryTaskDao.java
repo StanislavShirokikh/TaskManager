@@ -1,12 +1,16 @@
 package org.example.dao;
 
-import org.example.dto.*;
-import org.example.service.Converter;
+import org.example.dto.Epic;
+import org.example.dto.SubTask;
+import org.example.dto.Task;
 import org.example.service.IdGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class InMemoryTaskDao implements TaskDao {
     private final Map<Integer, Task> tasks = new HashMap<>();
@@ -44,7 +48,16 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public Epic getEpicById(int id) {
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        if (epic != null) {
+            List<Integer> list = subTasks.values().stream()
+                    .filter(subTask -> epic.getId().equals(subTask.getEpicId()))
+                    .map(SubTask::getId)
+                    .toList();
+            epic.setSubtasksId(list);
+            return epic;
+        }
+        return null;
     }
 
     @Override
@@ -59,6 +72,13 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void updateEpic(Epic epic) {
+        List<Integer> list = subTasks.values().stream()
+                .filter(subTask -> epic.getId().equals(subTask.getEpicId()))
+                .map(SubTask::getId)
+                .toList();
+        for (Integer integer : list) {
+            subTasks.remove(integer);
+        }
         epics.put(epic.getId(), epic);
     }
 
@@ -90,8 +110,10 @@ public class InMemoryTaskDao implements TaskDao {
         SubTask subTask = getSubTasksById(id);
         int epicId = subTask.getEpicId();
         Epic epic = getEpicById(epicId);
-        List<Integer> subTasksId = epic.getSubtasksId();
-        subTasksId.remove(id);
+        Set<Integer> set = new HashSet<>(epic.getSubtasksId());
+        set.remove(id);
+        List<Integer> list = new ArrayList<>(set);
+        epic.setSubtasksId(list);
         subTasks.remove(id);
     }
 }
