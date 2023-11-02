@@ -1,16 +1,18 @@
 package org.example.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends AbstractTask {
-    private final List<Integer> subtasksId = new ArrayList<>();
-    public void addSubtaskId(int id) {
-        subtasksId.add(id);
+    private List<Integer> subtasksId;
+
+    public void setSubtasksId(List<Integer> subtasksId) {
+        this.subtasksId = subtasksId;
     }
+
     public List<Integer> getSubtasksId() {
         return subtasksId;
     }
+
     @Override
     public String toString() {
         return "Epic{" +
