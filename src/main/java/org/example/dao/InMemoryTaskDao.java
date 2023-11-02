@@ -72,13 +72,6 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void updateEpic(Epic epic) {
-        List<Integer> list = subTasks.values().stream()
-                .filter(subTask -> epic.getId().equals(subTask.getEpicId()))
-                .map(SubTask::getId)
-                .toList();
-        for (Integer integer : list) {
-            subTasks.remove(integer);
-        }
         epics.put(epic.getId(), epic);
     }
 
@@ -100,10 +93,8 @@ public class InMemoryTaskDao implements TaskDao {
             for (Integer integer : subTasksId) {
                 subTasks.remove(integer);
             }
-            epics.remove(id);
-        } else {
-            epics.remove(id);
         }
+        epics.remove(id);
     }
     @Override
     public void removeSubTaskById(int id) {
