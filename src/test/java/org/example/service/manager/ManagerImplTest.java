@@ -133,6 +133,7 @@ class ManagerImplTest {
         assertEquals(updateTaskDto.getName(), actualTask.getName());
         assertEquals(updateTaskDto.getDescription(), actualTask.getDescription());
         assertEquals(updateTaskDto.getStatus(), actualTask.getStatus());
+        assertEquals(updateTaskDto.getId(), actualTask.getId());
     }
 
     @Test
@@ -162,21 +163,17 @@ class ManagerImplTest {
         updateEpicDto.setId(epicId);
 
         manager.updateEpic(updateEpicDto);
-        assertNull(manager.getSubTasksById(subTaskId));
-        assertNull(manager.getSubTasksById(subtask2Id));
 
-        SaveSubTaskDto saveSubTaskDto3 = new SaveSubTaskDto();
-        saveSubTaskDto.setName("subtask2");
-        saveSubTaskDto.setDescription("subtask2 description");
-        saveSubTaskDto3.setEpicId(epicId);
-        int subTask3Id = manager.saveSubtask(saveSubTaskDto3);
+        SubTask subTask = manager.getSubTasksById(subTaskId);
+        SubTask subTask2 = manager.getSubTasksById(subtask2Id);
+        assertNotNull(subTask);
+        assertNotNull(subTask2);
 
         Epic actualEpic = manager.getEpicById(epicId);
         assertEquals(updateEpicDto.getName(), actualEpic.getName());
         assertEquals(updateEpicDto.getDescription(), actualEpic.getDescription());
         assertEquals(Status.NEW, actualEpic.getStatus());
-        assertTrue(actualEpic.getSubtasksId().contains(subTask3Id));
-        assertEquals(1, actualEpic.getSubtasksId().size());
+        assertEquals(2, actualEpic.getSubtasksId().size());
     }
 
     @Test
