@@ -85,7 +85,7 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        if (!subTasks.containsKey(subTask.getId())) {
+        if (subTasks.containsKey(subTask.getId())) {
             subTasks.put(subTask.getId(), subTask);
         } else {
             throw new RuntimeException("Вы не можете обновить Subtask с несуществующим ID");
