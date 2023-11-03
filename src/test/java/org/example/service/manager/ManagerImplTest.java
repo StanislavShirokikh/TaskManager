@@ -10,7 +10,6 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
-import org.example.service.IdGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -278,6 +277,13 @@ class ManagerImplTest {
         Task actualTask = manager.getTaskById(taskId);
         assertNull(actualTask);
     }
+    @Test
+    void removeTaskWithBadID() {
+        assertThrows(RuntimeException.class, () -> {
+            manager.removeTaskById(-2);
+        });
+
+    }
 
     @Test
     @DisplayName("Успешное удаление Epic")
@@ -312,6 +318,13 @@ class ManagerImplTest {
     }
 
     @Test
+    void removeEpicWithBadID() {
+        assertThrows(RuntimeException.class, () -> {
+            manager.removeEpicById(-3);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное удаление Subtask")
     void removeSubTaskById() {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -341,6 +354,13 @@ class ManagerImplTest {
         assertTrue(actualEpic.getSubtasksId().contains(subTask1Id));
         assertFalse(actualEpic.getSubtasksId().contains(subTask2Id));
         assertEquals(1, actualEpic.getSubtasksId().size());
+    }
+
+    @Test
+    void removeSubTaskWithBadID() {
+        assertThrows(RuntimeException.class, () -> {
+            manager.removeSubTaskById(-9);
+        });
     }
 
     @Test
