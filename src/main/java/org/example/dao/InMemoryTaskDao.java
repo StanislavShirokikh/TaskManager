@@ -67,17 +67,29 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if (tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
+        } else {
+            throw new RuntimeException("Вы не можете обновить Task с несуществующим ID");
+        }
     }
 
     @Override
     public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
+        if (epics.containsKey(epic.getId())) {
+            epics.put(epic.getId(), epic);
+        } else {
+            throw new RuntimeException("Вы не можете обновить Epic с несуществующим ID");
+        }
     }
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        subTasks.put(subTask.getId(), subTask);
+        if (subTasks.containsKey(subTask.getId())) {
+            subTasks.put(subTask.getId(), subTask);
+        } else {
+            throw new RuntimeException("Вы не можете обновить Subtask с несуществующим ID");
+        }
     }
 
     @Override

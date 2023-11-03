@@ -137,6 +137,24 @@ class ManagerImplTest {
     }
 
     @Test
+    void updateTaskWithBadID() {
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        manager.saveTask(saveTaskDto);
+
+        UpdateTaskDto updateTaskDto = new UpdateTaskDto();
+        updateTaskDto.setName("updateTask");
+        updateTaskDto.setDescription("updateTask description");
+        updateTaskDto.setStatus(Status.IN_PROGRESS);
+        updateTaskDto.setId(-3);
+
+        assertThrows(RuntimeException.class, () -> {
+            manager.updateTask(updateTaskDto);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное обновление Epic")
     void updateEpic() {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -177,6 +195,22 @@ class ManagerImplTest {
     }
 
     @Test
+    void updateEpicWithBadId() {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        manager.saveEpic(saveEpicDto);
+
+        UpdateEpicDto updateEpicDto = new UpdateEpicDto();
+        updateEpicDto.setName("UpdateEpic");
+        updateEpicDto.setDescription("UpdateEpic Description");
+        updateEpicDto.setId(-2);
+        assertThrows(RuntimeException.class, () -> {
+            manager.updateEpic(updateEpicDto);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное обновление Subtask")
     void updateSubTask() {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -204,6 +238,31 @@ class ManagerImplTest {
         assertEquals(updateSubTaskDto.getDescription(), actualSubTask.getDescription());
         assertEquals(updateSubTaskDto.getStatus(), actualSubTask.getStatus());
         assertEquals(updateSubTaskDto.getEpicId(), actualSubTask.getEpicId());
+    }
+
+    @Test
+    void updateSubTaskWithBadID() {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask1");
+        saveSubTaskDto.setDescription("subtask1 description");
+        saveSubTaskDto.setEpicId(epicId);
+        manager.saveSubtask(saveSubTaskDto);
+
+        UpdateSubTaskDto updateSubTaskDto = new UpdateSubTaskDto();
+        updateSubTaskDto.setName("updateSubTask");
+        updateSubTaskDto.setDescription("updateSubTask description");
+        updateSubTaskDto.setId(-2);
+        updateSubTaskDto.setEpicId(epicId);
+        updateSubTaskDto.setStatus(Status.IN_PROGRESS);
+
+        assertThrows(RuntimeException.class, () -> {
+            manager.updateSubTask(updateSubTaskDto);
+        });
     }
 
     @Test
