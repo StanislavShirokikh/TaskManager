@@ -1,5 +1,8 @@
 package org.example.dto;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UpdateSubTaskDto extends AbstractUpdateTaskDto{
     private int epicId;
 
