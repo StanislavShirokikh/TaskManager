@@ -1,5 +1,6 @@
 package org.example.service.manager;
 
+import org.example.dao.InMemoryTaskDao;
 import org.example.dto.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
@@ -18,7 +19,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManagerImplTest {
-    private final Manager manager = new ManagerImpl();
+    private final Manager manager = new ManagerImpl(new InMemoryTaskDao());
 
     @Test
     @DisplayName("Успешное сохранение Task")
