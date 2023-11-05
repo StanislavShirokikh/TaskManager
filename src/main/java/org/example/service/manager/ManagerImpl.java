@@ -13,14 +13,21 @@ import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
 import org.example.service.Converter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
+@Service
 public class ManagerImpl implements Manager {
-    private final TaskDao taskDao = new InMemoryTaskDao();
+    private final TaskDao taskDao;
+    @Autowired
+    public ManagerImpl(TaskDao taskDao) {
+        this.taskDao = taskDao;
+    }
+
     @Override
     public int saveTask(SaveTaskDto saveTaskDto) {
         Task task = Converter.convertToTask(saveTaskDto);

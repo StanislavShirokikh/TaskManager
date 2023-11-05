@@ -4,6 +4,8 @@ import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
 import org.example.service.IdGenerator;
+import org.springframework.stereotype.Repository;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+@Repository
 public class InMemoryTaskDao implements TaskDao {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
