@@ -3,6 +3,9 @@ package org.example.dao;
 import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
+import org.example.exceptions.EpicNotFoundException;
+import org.example.exceptions.SubTaskNotFoundException;
+import org.example.exceptions.TaskNotFoundException;
 import org.example.service.IdGenerator;
 
 import java.util.ArrayList;
@@ -70,7 +73,7 @@ public class InMemoryTaskDao implements TaskDao {
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
         } else {
-            throw new RuntimeException("Вы не можете обновить Task с несуществующим ID");
+            throw new TaskNotFoundException("Вы не можете обновить Task с несуществующим ID");
         }
     }
 
@@ -79,7 +82,7 @@ public class InMemoryTaskDao implements TaskDao {
         if (epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
         } else {
-            throw new RuntimeException("Вы не можете обновить Epic с несуществующим ID");
+            throw new EpicNotFoundException("Вы не можете обновить Epic с несуществующим ID");
         }
     }
 
@@ -88,7 +91,7 @@ public class InMemoryTaskDao implements TaskDao {
         if (subTasks.containsKey(subTask.getId())) {
             subTasks.put(subTask.getId(), subTask);
         } else {
-            throw new RuntimeException("Вы не можете обновить Subtask с несуществующим ID");
+            throw new SubTaskNotFoundException("Вы не можете обновить Subtask с несуществующим ID");
         }
     }
 
@@ -97,7 +100,7 @@ public class InMemoryTaskDao implements TaskDao {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
         } else {
-            throw new RuntimeException("Вы не можете удалить Task с несуществующим ID");
+            throw new TaskNotFoundException("Вы не можете удалить Task с несуществующим ID");
         }
 
     }
@@ -105,7 +108,7 @@ public class InMemoryTaskDao implements TaskDao {
     @Override
     public void removeEpicById(int id) {
         if (!epics.containsKey(id)) {
-            throw new RuntimeException("ВЫ не можете удалить Epic с несуществующим ID");
+            throw new EpicNotFoundException("ВЫ не можете удалить Epic с несуществующим ID");
         }
         Epic epic = getEpicById(id);
         List<Integer> subTasksId = epic.getSubtasksId();
@@ -119,7 +122,7 @@ public class InMemoryTaskDao implements TaskDao {
     @Override
     public void removeSubTaskById(int id) {
         if (!subTasks.containsKey(id)) {
-            throw new RuntimeException("Вы не можете удалить SubTask с несуществующим ID");
+            throw new SubTaskNotFoundException("Вы не можете удалить SubTask с несуществующим ID");
         }
         SubTask subTask = getSubTasksById(id);
         int epicId = subTask.getEpicId();

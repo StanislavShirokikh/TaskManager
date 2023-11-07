@@ -8,6 +8,5 @@ import org.example.service.manager.ManagerImpl;
 
 public class Main {
     public static void main(String[] args) {
-
     }
 }
