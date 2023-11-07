@@ -11,6 +11,10 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
+import org.example.exceptions.EpicNotFoundException;
+import org.example.exceptions.SubTaskNotFoundException;
+import org.example.exceptions.TaskNotFoundException;
+import org.example.service.IdGenerator;
 import org.example.service.IdGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -150,7 +154,7 @@ class ManagerImplTest {
         updateTaskDto.setStatus(Status.IN_PROGRESS);
         updateTaskDto.setId(-3);
 
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(TaskNotFoundException.class, () -> {
             manager.updateTask(updateTaskDto);
         });
     }
@@ -206,7 +210,7 @@ class ManagerImplTest {
         updateEpicDto.setName("UpdateEpic");
         updateEpicDto.setDescription("UpdateEpic Description");
         updateEpicDto.setId(-2);
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(EpicNotFoundException.class, () -> {
             manager.updateEpic(updateEpicDto);
         });
     }
@@ -261,7 +265,7 @@ class ManagerImplTest {
         updateSubTaskDto.setEpicId(epicId);
         updateSubTaskDto.setStatus(Status.IN_PROGRESS);
 
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(SubTaskNotFoundException.class, () -> {
             manager.updateSubTask(updateSubTaskDto);
         });
     }
@@ -281,7 +285,7 @@ class ManagerImplTest {
     }
     @Test
     void removeTaskWithBadID() {
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(TaskNotFoundException.class, () -> {
             manager.removeTaskById(-2);
         });
 
@@ -321,7 +325,7 @@ class ManagerImplTest {
 
     @Test
     void removeEpicWithBadID() {
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(EpicNotFoundException.class, () -> {
             manager.removeEpicById(-3);
         });
     }
@@ -360,7 +364,7 @@ class ManagerImplTest {
 
     @Test
     void removeSubTaskWithBadID() {
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(SubTaskNotFoundException.class, () -> {
             manager.removeSubTaskById(-9);
         });
     }
