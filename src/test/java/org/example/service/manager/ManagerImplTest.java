@@ -10,6 +10,9 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
+import org.example.exceptions.EpicNotFoundException;
+import org.example.exceptions.SubTaskNotFoundException;
+import org.example.exceptions.TaskNotFoundException;
 import org.example.service.IdGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -137,6 +140,24 @@ class ManagerImplTest {
     }
 
     @Test
+    void updateTaskWithBadID() {
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        manager.saveTask(saveTaskDto);
+
+        UpdateTaskDto updateTaskDto = new UpdateTaskDto();
+        updateTaskDto.setName("updateTask");
+        updateTaskDto.setDescription("updateTask description");
+        updateTaskDto.setStatus(Status.IN_PROGRESS);
+        updateTaskDto.setId(-3);
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            manager.updateTask(updateTaskDto);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное обновление Epic")
     void updateEpic() {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -177,6 +198,22 @@ class ManagerImplTest {
     }
 
     @Test
+    void updateEpicWithBadId() {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        manager.saveEpic(saveEpicDto);
+
+        UpdateEpicDto updateEpicDto = new UpdateEpicDto();
+        updateEpicDto.setName("UpdateEpic");
+        updateEpicDto.setDescription("UpdateEpic Description");
+        updateEpicDto.setId(-2);
+        assertThrows(EpicNotFoundException.class, () -> {
+            manager.updateEpic(updateEpicDto);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное обновление Subtask")
     void updateSubTask() {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -207,6 +244,31 @@ class ManagerImplTest {
     }
 
     @Test
+    void updateSubTaskWithBadID() {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask1");
+        saveSubTaskDto.setDescription("subtask1 description");
+        saveSubTaskDto.setEpicId(epicId);
+        manager.saveSubtask(saveSubTaskDto);
+
+        UpdateSubTaskDto updateSubTaskDto = new UpdateSubTaskDto();
+        updateSubTaskDto.setName("updateSubTask");
+        updateSubTaskDto.setDescription("updateSubTask description");
+        updateSubTaskDto.setId(-2);
+        updateSubTaskDto.setEpicId(epicId);
+        updateSubTaskDto.setStatus(Status.IN_PROGRESS);
+
+        assertThrows(SubTaskNotFoundException.class, () -> {
+            manager.updateSubTask(updateSubTaskDto);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное удаление Task")
     void removeTaskById() {
         SaveTaskDto saveTaskDto = new SaveTaskDto();
@@ -218,6 +280,13 @@ class ManagerImplTest {
 
         Task actualTask = manager.getTaskById(taskId);
         assertNull(actualTask);
+    }
+    @Test
+    void removeTaskWithBadID() {
+        assertThrows(TaskNotFoundException.class, () -> {
+            manager.removeTaskById(-2);
+        });
+
     }
 
     @Test
@@ -253,6 +322,13 @@ class ManagerImplTest {
     }
 
     @Test
+    void removeEpicWithBadID() {
+        assertThrows(EpicNotFoundException.class, () -> {
+            manager.removeEpicById(-3);
+        });
+    }
+
+    @Test
     @DisplayName("Успешное удаление Subtask")
     void removeSubTaskById() {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -282,6 +358,13 @@ class ManagerImplTest {
         assertTrue(actualEpic.getSubtasksId().contains(subTask1Id));
         assertFalse(actualEpic.getSubtasksId().contains(subTask2Id));
         assertEquals(1, actualEpic.getSubtasksId().size());
+    }
+
+    @Test
+    void removeSubTaskWithBadID() {
+        assertThrows(SubTaskNotFoundException.class, () -> {
+            manager.removeSubTaskById(-9);
+        });
     }
 
     @Test
