@@ -1,12 +1,9 @@
 package org.example.controller.requests;
 
-import org.example.dto.Status;
-
-public class UpdateTaskRequest extends AbstractUpdateTaskRequest {
-
+public class UpdateSubtaskRequest extends AbstractUpdateTaskRequest{
     @Override
     public String toString() {
-        return "UpdateTaskRequest{" +
+        return "UpdateSubtaskRequest{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
