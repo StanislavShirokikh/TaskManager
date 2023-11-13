@@ -38,7 +38,7 @@ public class TaskDtoConverter {
     public static UpdateTaskDto convert(UpdateTaskRequest updateTaskRequest) {
         UpdateTaskDto updateTaskDto = new UpdateTaskDto();
         updateTaskDto.setName(updateTaskRequest.getName());
-        updateTaskDto.setDescription(updateTaskDto.getDescription());
+        updateTaskDto.setDescription(updateTaskRequest.getDescription());
         updateTaskDto.setId(updateTaskRequest.getId());
         updateTaskDto.setStatus(updateTaskRequest.getStatus());
         return updateTaskDto;
@@ -55,8 +55,8 @@ public class TaskDtoConverter {
 
     public static UpdateSubTaskDto convert(UpdateSubtaskRequest updateSubtaskRequest) {
         UpdateSubTaskDto updateSubTaskDto = new UpdateSubTaskDto();
-        updateSubTaskDto.setName(updateSubTaskDto.getName());
-        updateSubTaskDto.setDescription(updateSubTaskDto.getDescription());
+        updateSubTaskDto.setName(updateSubtaskRequest.getName());
+        updateSubTaskDto.setDescription(updateSubtaskRequest.getDescription());
         updateSubTaskDto.setId(updateSubtaskRequest.getId());
         updateSubTaskDto.setEpicId(updateSubtaskRequest.getEpicId());
         updateSubTaskDto.setStatus(updateSubtaskRequest.getStatus());

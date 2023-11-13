@@ -5,13 +5,16 @@ import org.example.controller.requests.CreateEpicRequest;
 import org.example.controller.requests.CreateSubtaskRequest;
 import org.example.controller.requests.CreateTaskRequest;
 import org.example.controller.requests.UpdateEpicRequest;
+import org.example.controller.requests.UpdateSubtaskRequest;
 import org.example.controller.requests.UpdateTaskRequest;
 import org.example.dto.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
 import org.example.dto.SaveTaskDto;
+import org.example.dto.SubTask;
 import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
+import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
 import org.example.service.manager.Manager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,10 +79,25 @@ public class TaskManagerController {
         manager.removeEpicById(id);
     }
 
-    @PostMapping
+    @PostMapping("/subtask/create")
     public int createSubtask(@RequestBody CreateSubtaskRequest createSubtaskRequest) {
         SaveSubTaskDto saveSubTaskDto = TaskDtoConverter.convert(createSubtaskRequest);
         return manager.saveSubtask(saveSubTaskDto);
     }
 
+    @GetMapping("/subtask/get/{id}")
+    public SubTask getSubtask(@PathVariable int id) {
+        return manager.getSubTasksById(id);
+    }
+
+    @PutMapping("/subtask/update")
+    public void updateSubtask(@RequestBody UpdateSubtaskRequest updateSubtaskRequest) {
+        UpdateSubTaskDto updateSubTaskDto = TaskDtoConverter.convert(updateSubtaskRequest);
+        manager.updateSubTask(updateSubTaskDto);
+    }
+
+    @DeleteMapping("/subtask/delete/{id}")
+    public void deleteSubtask(@PathVariable int id) {
+        manager.removeSubTaskById(id);
+    }
 }
