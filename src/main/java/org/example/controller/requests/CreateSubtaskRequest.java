@@ -1,15 +1,12 @@
 package org.example.controller.requests;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CreateSubtaskRequest extends AbstractCreateTaskRequest{
     private Integer epicId;
-
-    public Integer getEpicId() {
-        return epicId;
-    }
-
-    public void setEpicId(Integer epicId) {
-        this.epicId = epicId;
-    }
 
     @Override
     public String toString() {
