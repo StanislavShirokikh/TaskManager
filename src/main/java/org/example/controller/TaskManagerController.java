@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.controller.converter.TaskDtoConverter;
 import org.example.controller.requests.CreateEpicRequest;
 import org.example.controller.requests.CreateSubtaskRequest;
@@ -29,13 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/task-manager")
-
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TaskManagerController {
     private final Manager manager;
-    @Autowired
-    public TaskManagerController(Manager manager) {
-        this.manager = manager;
-    }
 
     @PostMapping("/task/create")
     public int createTask(@RequestBody CreateTaskRequest createTaskRequest) {
