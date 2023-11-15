@@ -1,5 +1,6 @@
 package org.example.service.manager;
 
+import lombok.RequiredArgsConstructor;
 import org.example.dao.InMemoryTaskDao;
 import org.example.dao.TaskDao;
 import org.example.dto.Epic;
@@ -15,20 +16,16 @@ import org.example.dto.UpdateTaskDto;
 import org.example.service.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ManagerImpl implements Manager {
     private final TaskDao taskDao;
-    @Autowired
-    public ManagerImpl(TaskDao taskDao) {
-        this.taskDao = taskDao;
-    }
-
-
     @Override
     public int saveTask(SaveTaskDto saveTaskDto) {
         Task task = Converter.convertToTask(saveTaskDto);
