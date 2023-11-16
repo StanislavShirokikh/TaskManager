@@ -61,10 +61,11 @@ public class ManagerImpl implements Manager {
         if (epic != null) {
             epic.setStatus(getEpicStatus(epic));
             log.info("Найден эпик его статус равен {}", epic.getStatus());
-            return epic;
+        } else {
+            log.info("epic was not found with id = [{}]", id);
         }
-        log.info("Эпик с {} не найден", id);
-        return null;
+
+        return epic;
     }
 
     @Override
@@ -114,14 +115,17 @@ public class ManagerImpl implements Manager {
                 .map(SubTask::getStatus)
                 .collect(Collectors.toSet());
 
+        Status status;
         if (hashSet.size() == 1 && hashSet.contains(Status.NEW) || epic.getSubtasksId().isEmpty()) {
-            log.info(logMessage, epic.getId(), e);
-            return Status.NEW;
+            status = Status.NEW;
         } else if (hashSet.size() == 1 && hashSet.contains(Status.DONE)) {
-            return Status.DONE;
+            status = Status.DONE;
         } else {
-            return Status.IN_PROGRESS;
+            status = Status.IN_PROGRESS;
         }
+
+        log.info("Calculated status for epic with id = [{}] is [{}]", epic.getId(), status);
+        return status;
     }
 
     private List<SubTask> getSubtasks(Epic epic) {
