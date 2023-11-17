@@ -2,7 +2,6 @@ package org.example.service.manager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.dao.InMemoryTaskDao;
 import org.example.dao.TaskDao;
 import org.example.dto.Epic;
 import org.example.dto.SaveEpicDto;
@@ -107,8 +106,6 @@ public class ManagerImpl implements Manager {
     }
 
     private Status getEpicStatus(Epic epic) {
-        String logMessage = "Для эпика с id {} рассчитан {}";
-
         List<SubTask> list = getSubtasks(epic);
 
         Set<Status> hashSet = list.stream()
