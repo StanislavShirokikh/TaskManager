@@ -1,13 +1,14 @@
-package org.example.dto;
+package org.example.controller.requests;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.dto.Status;
 
 @Getter
 @Setter
-public abstract class AbstractTask {
+public abstract class AbstractUpdateTaskRequest {
     private String name;
     private String description;
-    private Integer id;
     private Status status;
+    private int id;
 }

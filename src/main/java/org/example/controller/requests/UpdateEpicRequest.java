@@ -1,13 +1,13 @@
-package org.example.dto;
+package org.example.controller.requests;
 
-
-public class UpdateTaskDto extends AbstractUpdateTaskDto {
+public class UpdateEpicRequest extends AbstractUpdateTaskRequest{
     @Override
     public String toString() {
-        return "UpdateTaskDto{" +
+        return "UpdateEpicRequest{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
+                ", id=" + getId() +
                 '}';
     }
 }

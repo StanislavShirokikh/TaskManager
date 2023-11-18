@@ -1,12 +1,10 @@
-package org.example.dto;
+package org.example.controller.requests;
 
-import org.springframework.stereotype.Component;
+public class CreateTaskRequest extends AbstractCreateTaskRequest {
 
-
-public class SaveEpicDto extends AbstractSaveTaskDto {
     @Override
     public String toString() {
-        return "SaveEpicDto{" +
+        return "CreateTaskRequest{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 '}';

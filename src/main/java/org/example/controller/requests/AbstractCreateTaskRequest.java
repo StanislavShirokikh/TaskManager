@@ -1,13 +1,12 @@
-package org.example.dto;
+package org.example.controller.requests;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-public abstract class AbstractTask {
+public abstract class AbstractCreateTaskRequest {
     private String name;
     private String description;
-    private Integer id;
-    private Status status;
 }

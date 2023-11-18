@@ -1,5 +1,7 @@
 package org.example.dao;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
@@ -7,6 +9,8 @@ import org.example.exceptions.EpicNotFoundException;
 import org.example.exceptions.SubTaskNotFoundException;
 import org.example.exceptions.TaskNotFoundException;
 import org.example.service.IdGenerator;
+import org.springframework.stereotype.Repository;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +18,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+@Repository
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InMemoryTaskDao implements TaskDao {
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
-    private final Map<Integer, SubTask> subTasks = new HashMap<>();
-    private final IdGenerator taskIdGenerator = new IdGenerator();
-    private final IdGenerator epicIdGenerator = new IdGenerator();
-    private final IdGenerator subtaskIdGenerator = new IdGenerator();
+    Map<Integer, Task> tasks = new HashMap<>();
+    Map<Integer, Epic> epics = new HashMap<>();
+    Map<Integer, SubTask> subTasks = new HashMap<>();
+    IdGenerator taskIdGenerator = new IdGenerator();
+    IdGenerator epicIdGenerator = new IdGenerator();
+    IdGenerator subtaskIdGenerator = new IdGenerator();
 
     @Override
     public int saveTask(Task task) {

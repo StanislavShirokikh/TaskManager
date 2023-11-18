@@ -1,16 +1,16 @@
-package org.example.dto;
+package org.example.controller.requests;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
+
 @Getter
 @Setter
-public class SaveSubTaskDto extends AbstractSaveTaskDto {
+public class CreateSubtaskRequest extends AbstractCreateTaskRequest{
     private Integer epicId;
 
     @Override
     public String toString() {
-        return "SaveSubtaskTaskDto{" +
+        return "CreateSubtaskRequest{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 '}';

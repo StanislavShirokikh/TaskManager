@@ -10,8 +10,10 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
+import org.springframework.context.annotation.Bean;
 
 public class Converter {
+
     public static Task convertToTask(SaveTaskDto saveTaskDto) {
         Task task = new Task();
         task.setName(saveTaskDto.getName());
@@ -19,6 +21,7 @@ public class Converter {
         task.setStatus(Status.NEW);
         return task;
     }
+
     public static Task convertToTask(UpdateTaskDto updateTaskDto) {
         Task task = new Task();
         task.setName(updateTaskDto.getName());
@@ -27,6 +30,7 @@ public class Converter {
         task.setStatus(updateTaskDto.getStatus());
         return task;
     }
+
     public static Epic converterToEpic(SaveEpicDto saveEpicDto) {
         Epic epic = new Epic();
         epic.setName(saveEpicDto.getName());
