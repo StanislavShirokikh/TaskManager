@@ -19,9 +19,9 @@ import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
 import org.example.service.manager.Manager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,14 +36,14 @@ public class TaskManagerController {
     private final Manager manager;
 
     @PostMapping("/task/create")
-    public int createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+    public ResponseEntity<Integer> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
         SaveTaskDto saveTaskDto = TaskDtoConverter.convert(createTaskRequest);
-        return manager.saveTask(saveTaskDto);
+        return ResponseEntity.ok(manager.saveTask(saveTaskDto));
     }
 
-    @GetMapping("/task/get/{id}")
-    public Task getTask(@RequestParam int id) {
-        return manager.getTaskById(id);
+    @GetMapping("/task/get/")
+    public ResponseEntity<Task> getTask(@RequestParam("id") int id) {
+        return ResponseEntity.ok(manager.getTaskById(id));
     }
 
     @PutMapping("/task/update")
@@ -63,8 +63,8 @@ public class TaskManagerController {
         return manager.saveEpic(saveEpicDto);
     }
 
-    @GetMapping("/epic/get/{id}")
-    public Epic getEpic(@RequestParam int id) {
+    @GetMapping("/epic/get/")
+    public Epic getEpic(@RequestParam("id") int id) {
         return manager.getEpicById(id);
     }
 
@@ -74,8 +74,8 @@ public class TaskManagerController {
         manager.updateEpic(updateEpicDto);
     }
 
-    @DeleteMapping("/epic/delete/{id}")
-    public void deleteEpic(@RequestParam int id) {
+    @DeleteMapping("/epic/delete/")
+    public void deleteEpic(@RequestParam("id") int id) {
         manager.removeEpicById(id);
     }
 
@@ -85,8 +85,8 @@ public class TaskManagerController {
         return manager.saveSubtask(saveSubTaskDto);
     }
 
-    @GetMapping("/subtask/get/{id}")
-    public SubTask getSubtask(@RequestParam int id) {
+    @GetMapping("/subtask/get/")
+    public SubTask getSubtask(@RequestParam("id") int id) {
         return manager.getSubTasksById(id);
     }
 
@@ -96,8 +96,8 @@ public class TaskManagerController {
         manager.updateSubTask(updateSubTaskDto);
     }
 
-    @DeleteMapping("/subtask/delete/{id}")
-    public void deleteSubtask(@RequestParam int id) {
+    @DeleteMapping("/subtask/delete/")
+    public void deleteSubtask(@RequestParam("id") int id) {
         manager.removeSubTaskById(id);
     }
 }
