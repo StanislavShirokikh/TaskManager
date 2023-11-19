@@ -51,7 +51,10 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public Task getTaskById(int id) {
-        return tasks.get(id);
+        return tasks.values().stream()
+                .filter(task -> task.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new TaskNotFoundException("Task with this id " + id + " not found"));
     }
 
     @Override
@@ -64,13 +67,17 @@ public class InMemoryTaskDao implements TaskDao {
                     .toList();
             epic.setSubtasksId(list);
             return epic;
+        } else {
+            throw new EpicNotFoundException("Epic with this id " + id + " not found");
         }
-        return null;
     }
 
     @Override
     public SubTask getSubTasksById(int id) {
-        return subTasks.get(id);
+        return subTasks.values().stream()
+                .filter(subTask -> subTask.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new SubTaskNotFoundException("SubTask with this id " + id + " not found"));
     }
 
     @Override
