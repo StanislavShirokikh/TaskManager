@@ -5,9 +5,9 @@ import lombok.experimental.FieldDefaults;
 import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
-import org.example.exceptions.EpicNotFoundException;
-import org.example.exceptions.SubTaskNotFoundException;
-import org.example.exceptions.TaskNotFoundException;
+import org.example.dao.exceptions.EpicNotFoundException;
+import org.example.dao.exceptions.SubTaskNotFoundException;
+import org.example.dao.exceptions.TaskNotFoundException;
 import org.example.service.IdGenerator;
 import org.springframework.stereotype.Repository;
 

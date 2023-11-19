@@ -1,6 +1,5 @@
 package org.example.service.manager;
 
-import org.example.dao.InMemoryTaskDao;
 import org.example.dto.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
@@ -11,11 +10,9 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
-import org.example.exceptions.EpicNotFoundException;
-import org.example.exceptions.SubTaskNotFoundException;
-import org.example.exceptions.TaskNotFoundException;
-import org.example.service.IdGenerator;
-import org.example.service.IdGenerator;
+import org.example.dao.exceptions.EpicNotFoundException;
+import org.example.dao.exceptions.SubTaskNotFoundException;
+import org.example.dao.exceptions.TaskNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
