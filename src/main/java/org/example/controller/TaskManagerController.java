@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,7 +42,7 @@ public class TaskManagerController {
     }
 
     @GetMapping("/task/get/{id}")
-    public Task getTask(@PathVariable int id) {
+    public Task getTask(@RequestParam int id) {
         return manager.getTaskById(id);
     }
 
@@ -52,7 +53,7 @@ public class TaskManagerController {
     }
 
     @DeleteMapping("/task/delete/{id}")
-    public void deleteTask(@PathVariable int id) {
+    public void deleteTask(@RequestParam int id) {
         manager.removeTaskById(id);
     }
 
@@ -63,7 +64,7 @@ public class TaskManagerController {
     }
 
     @GetMapping("/epic/get/{id}")
-    public Epic getEpic(@PathVariable int id) {
+    public Epic getEpic(@RequestParam int id) {
         return manager.getEpicById(id);
     }
 
@@ -74,7 +75,7 @@ public class TaskManagerController {
     }
 
     @DeleteMapping("/epic/delete/{id}")
-    public void deleteEpic(@PathVariable int id) {
+    public void deleteEpic(@RequestParam int id) {
         manager.removeEpicById(id);
     }
 
@@ -85,7 +86,7 @@ public class TaskManagerController {
     }
 
     @GetMapping("/subtask/get/{id}")
-    public SubTask getSubtask(@PathVariable int id) {
+    public SubTask getSubtask(@RequestParam int id) {
         return manager.getSubTasksById(id);
     }
 
@@ -96,7 +97,7 @@ public class TaskManagerController {
     }
 
     @DeleteMapping("/subtask/delete/{id}")
-    public void deleteSubtask(@PathVariable int id) {
+    public void deleteSubtask(@RequestParam int id) {
         manager.removeSubTaskById(id);
     }
 }
