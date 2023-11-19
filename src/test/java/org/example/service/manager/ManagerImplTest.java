@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class ManagerImplTest {
     @Autowired
@@ -44,8 +45,7 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Task с несуществующим идентификатором")
     void getTaskWithBadID() {
-        Task actualTask = manager.getTaskById(-5);
-        assertNull(actualTask);
+        assertThrows(TaskNotFoundException.class, () -> manager.getTaskById(-8));
     }
 
     @Test
@@ -85,8 +85,7 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Epic с несуществующим идентификатором")
     void getEpicWithBadId() {
-        Epic actualEpic = manager.getEpicById(-7);
-        assertNull(actualEpic);
+        assertThrows(EpicNotFoundException.class, () -> manager.getEpicById(-9));
     }
 
     @Test
@@ -114,8 +113,7 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Subtask с несуществующим идентификатором")
     void getSubtaskWithBadId() {
-        SubTask subTask = manager.getSubTasksById(-7);
-        assertNull(subTask);
+        assertThrows(SubTaskNotFoundException.class, () -> manager.getSubTasksById(-7));
     }
 
     @Test
@@ -283,6 +281,7 @@ class ManagerImplTest {
         Task actualTask = manager.getTaskById(taskId);
         assertNull(actualTask);
     }
+
     @Test
     void removeTaskWithBadID() {
         assertThrows(TaskNotFoundException.class, () -> {
