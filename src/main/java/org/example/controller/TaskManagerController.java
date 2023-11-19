@@ -58,14 +58,14 @@ public class TaskManagerController {
     }
 
     @PostMapping("/epic/create")
-    public int createEpic(@RequestBody CreateEpicRequest createEpicRequest) {
+    public ResponseEntity<Integer> createEpic(@RequestBody CreateEpicRequest createEpicRequest) {
         SaveEpicDto saveEpicDto = TaskDtoConverter.convert(createEpicRequest);
-        return manager.saveEpic(saveEpicDto);
+        return ResponseEntity.ok(manager.saveEpic(saveEpicDto));
     }
 
     @GetMapping("/epic/get/")
-    public Epic getEpic(@RequestParam("id") int id) {
-        return manager.getEpicById(id);
+    public ResponseEntity<Epic> getEpic(@RequestParam("id") int id) {
+        return ResponseEntity.ok(manager.getEpicById(id));
     }
 
     @PutMapping("/epic/update")
@@ -80,14 +80,14 @@ public class TaskManagerController {
     }
 
     @PostMapping("/subtask/create")
-    public int createSubtask(@RequestBody CreateSubtaskRequest createSubtaskRequest) {
+    public ResponseEntity<Integer> createSubtask(@RequestBody CreateSubtaskRequest createSubtaskRequest) {
         SaveSubTaskDto saveSubTaskDto = TaskDtoConverter.convert(createSubtaskRequest);
-        return manager.saveSubtask(saveSubTaskDto);
+        return ResponseEntity.ok(manager.saveSubtask(saveSubTaskDto));
     }
 
     @GetMapping("/subtask/get/")
-    public SubTask getSubtask(@RequestParam("id") int id) {
-        return manager.getSubTasksById(id);
+    public ResponseEntity<SubTask> getSubtask(@RequestParam("id") int id) {
+        return ResponseEntity.ok(manager.getSubTasksById(id));
     }
 
     @PutMapping("/subtask/update")
