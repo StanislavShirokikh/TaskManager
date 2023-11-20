@@ -19,14 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 @Repository
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InMemoryTaskDao implements TaskDao {
-    Map<Integer, Task> tasks = new HashMap<>();
-    Map<Integer, Epic> epics = new HashMap<>();
-    Map<Integer, SubTask> subTasks = new HashMap<>();
-    IdGenerator taskIdGenerator = new IdGenerator();
-    IdGenerator epicIdGenerator = new IdGenerator();
-    IdGenerator subtaskIdGenerator = new IdGenerator();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, SubTask> subTasks = new HashMap<>();
+    private final IdGenerator taskIdGenerator = new IdGenerator();
+    private final IdGenerator epicIdGenerator = new IdGenerator();
+    private final IdGenerator subtaskIdGenerator = new IdGenerator();
 
     @Override
     public int saveTask(Task task) {
@@ -51,10 +50,7 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public Task getTaskById(int id) {
-        return tasks.values().stream()
-                .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException("Task with this id " + id + " not found"));
+        return tasks.get(id);
     }
 
     @Override
@@ -67,17 +63,13 @@ public class InMemoryTaskDao implements TaskDao {
                     .toList();
             epic.setSubtasksId(list);
             return epic;
-        } else {
-            throw new EpicNotFoundException("Epic with this id " + id + " not found");
         }
+        return null;
     }
 
     @Override
     public SubTask getSubTasksById(int id) {
-        return subTasks.values().stream()
-                .filter(subTask -> subTask.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new SubTaskNotFoundException("SubTask with this id " + id + " not found"));
+        return subTasks.get(id);
     }
 
     @Override

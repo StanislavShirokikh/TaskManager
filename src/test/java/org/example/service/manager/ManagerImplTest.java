@@ -45,7 +45,8 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Task с несуществующим идентификатором")
     void getTaskWithBadID() {
-        assertThrows(TaskNotFoundException.class, () -> manager.getTaskById(-8));
+        Task actualTask = manager.getTaskById(-8);
+        assertNull(actualTask);
     }
 
     @Test
@@ -85,7 +86,8 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Epic с несуществующим идентификатором")
     void getEpicWithBadId() {
-        assertThrows(EpicNotFoundException.class, () -> manager.getEpicById(-9));
+        Epic actualEpic = manager.getEpicById(-9);
+        assertNull(actualEpic);
     }
 
     @Test
@@ -113,7 +115,8 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Subtask с несуществующим идентификатором")
     void getSubtaskWithBadId() {
-        assertThrows(SubTaskNotFoundException.class, () -> manager.getSubTasksById(-7));
+        SubTask actualSubtask = manager.getSubTasksById(-7);
+        assertNull(actualSubtask);
     }
 
     @Test
@@ -278,7 +281,8 @@ class ManagerImplTest {
 
         manager.removeTaskById(taskId);
 
-        assertThrows(TaskNotFoundException.class, () -> manager.getTaskById(taskId));
+        Task actualTask = manager.getTaskById(taskId);
+        assertNull(actualTask);
     }
 
     @Test
@@ -311,10 +315,13 @@ class ManagerImplTest {
         int subTask2Id = manager.saveSubtask(saveSubTaskDto2);
 
         manager.removeEpicById(epicId);
+        Epic actualEpic = manager.getEpicById(epicId);
+        SubTask actualSubtask1 = manager.getSubTasksById(subTask1Id);
+        SubTask actualSubtask2 = manager.getSubTasksById(subTask2Id);
 
-        assertThrows(EpicNotFoundException.class, () -> manager.getEpicById(epicId));
-        assertThrows(SubTaskNotFoundException.class, () -> manager.getSubTasksById(subTask1Id));
-        assertThrows(SubTaskNotFoundException.class, () -> manager.getSubTasksById(subTask2Id));
+        assertNull(actualEpic);
+        assertNull(actualSubtask1);
+        assertNull(actualSubtask2);
     }
 
     @Test
@@ -346,8 +353,9 @@ class ManagerImplTest {
         int subTask2Id = manager.saveSubtask(saveSubTaskDto2);
 
         manager.removeSubTaskById(subTask2Id);
+        SubTask actualSubtask = manager.getSubTasksById(subTask2Id);
 
-        assertThrows(SubTaskNotFoundException.class, () -> manager.getSubTasksById(subTask2Id));
+        assertNull(actualSubtask);
         Epic actualEpic = manager.getEpicById(epicId);
         assertNotNull(actualEpic);
         assertTrue(actualEpic.getSubtasksId().contains(subTask1Id));
