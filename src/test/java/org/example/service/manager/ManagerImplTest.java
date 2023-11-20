@@ -1,6 +1,5 @@
 package org.example.service.manager;
 
-import org.example.dao.InMemoryTaskDao;
 import org.example.dto.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
@@ -11,11 +10,9 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
-import org.example.exceptions.EpicNotFoundException;
-import org.example.exceptions.SubTaskNotFoundException;
-import org.example.exceptions.TaskNotFoundException;
-import org.example.service.IdGenerator;
-import org.example.service.IdGenerator;
+import org.example.dao.exceptions.EpicNotFoundException;
+import org.example.dao.exceptions.SubTaskNotFoundException;
+import org.example.dao.exceptions.TaskNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 class ManagerImplTest {
     @Autowired
@@ -47,7 +45,7 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Task с несуществующим идентификатором")
     void getTaskWithBadID() {
-        Task actualTask = manager.getTaskById(-5);
+        Task actualTask = manager.getTaskById(-8);
         assertNull(actualTask);
     }
 
@@ -88,7 +86,7 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Epic с несуществующим идентификатором")
     void getEpicWithBadId() {
-        Epic actualEpic = manager.getEpicById(-7);
+        Epic actualEpic = manager.getEpicById(-9);
         assertNull(actualEpic);
     }
 
@@ -117,8 +115,8 @@ class ManagerImplTest {
     @Test
     @DisplayName("Запрос Subtask с несуществующим идентификатором")
     void getSubtaskWithBadId() {
-        SubTask subTask = manager.getSubTasksById(-7);
-        assertNull(subTask);
+        SubTask actualSubtask = manager.getSubTasksById(-7);
+        assertNull(actualSubtask);
     }
 
     @Test
@@ -286,6 +284,7 @@ class ManagerImplTest {
         Task actualTask = manager.getTaskById(taskId);
         assertNull(actualTask);
     }
+
     @Test
     void removeTaskWithBadID() {
         assertThrows(TaskNotFoundException.class, () -> {
@@ -316,13 +315,12 @@ class ManagerImplTest {
         int subTask2Id = manager.saveSubtask(saveSubTaskDto2);
 
         manager.removeEpicById(epicId);
-
         Epic actualEpic = manager.getEpicById(epicId);
-        SubTask actualSubTask1 = manager.getSubTasksById(subTask1Id);
+        SubTask actualSubtask1 = manager.getSubTasksById(subTask1Id);
         SubTask actualSubtask2 = manager.getSubTasksById(subTask2Id);
 
         assertNull(actualEpic);
-        assertNull(actualSubTask1);
+        assertNull(actualSubtask1);
         assertNull(actualSubtask2);
     }
 
@@ -355,9 +353,9 @@ class ManagerImplTest {
         int subTask2Id = manager.saveSubtask(saveSubTaskDto2);
 
         manager.removeSubTaskById(subTask2Id);
+        SubTask actualSubtask = manager.getSubTasksById(subTask2Id);
 
-        SubTask actualSubTask = manager.getSubTasksById(subTask2Id);
-        assertNull(actualSubTask);
+        assertNull(actualSubtask);
         Epic actualEpic = manager.getEpicById(epicId);
         assertNotNull(actualEpic);
         assertTrue(actualEpic.getSubtasksId().contains(subTask1Id));

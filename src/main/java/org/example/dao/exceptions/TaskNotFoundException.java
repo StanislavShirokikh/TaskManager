@@ -1,4 +1,4 @@
-package org.example.exceptions;
+package org.example.dao.exceptions;
 
 import java.io.UncheckedIOException;
 

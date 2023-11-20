@@ -5,9 +5,9 @@ import lombok.experimental.FieldDefaults;
 import org.example.dto.Epic;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
-import org.example.exceptions.EpicNotFoundException;
-import org.example.exceptions.SubTaskNotFoundException;
-import org.example.exceptions.TaskNotFoundException;
+import org.example.dao.exceptions.EpicNotFoundException;
+import org.example.dao.exceptions.SubTaskNotFoundException;
+import org.example.dao.exceptions.TaskNotFoundException;
 import org.example.service.IdGenerator;
 import org.springframework.stereotype.Repository;
 
@@ -19,14 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 @Repository
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InMemoryTaskDao implements TaskDao {
-    Map<Integer, Task> tasks = new HashMap<>();
-    Map<Integer, Epic> epics = new HashMap<>();
-    Map<Integer, SubTask> subTasks = new HashMap<>();
-    IdGenerator taskIdGenerator = new IdGenerator();
-    IdGenerator epicIdGenerator = new IdGenerator();
-    IdGenerator subtaskIdGenerator = new IdGenerator();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, SubTask> subTasks = new HashMap<>();
+    private final IdGenerator taskIdGenerator = new IdGenerator();
+    private final IdGenerator epicIdGenerator = new IdGenerator();
+    private final IdGenerator subtaskIdGenerator = new IdGenerator();
 
     @Override
     public int saveTask(Task task) {
@@ -112,10 +111,10 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void removeEpicById(int id) {
-        if (!epics.containsKey(id)) {
+        Epic epic = getEpicById(id);
+        if (epic == null) {
             throw new EpicNotFoundException("ВЫ не можете удалить Epic с несуществующим ID");
         }
-        Epic epic = getEpicById(id);
         List<Integer> subTasksId = epic.getSubtasksId();
         if (!subTasksId.isEmpty()) {
             for (Integer integer : subTasksId) {
@@ -126,10 +125,10 @@ public class InMemoryTaskDao implements TaskDao {
     }
     @Override
     public void removeSubTaskById(int id) {
-        if (!subTasks.containsKey(id)) {
+        SubTask subTask = getSubTasksById(id);
+        if (subTask == null) {
             throw new SubTaskNotFoundException("Вы не можете удалить SubTask с несуществующим ID");
         }
-        SubTask subTask = getSubTasksById(id);
         int epicId = subTask.getEpicId();
         Epic epic = getEpicById(epicId);
         Set<Integer> set = new HashSet<>(epic.getSubtasksId());
