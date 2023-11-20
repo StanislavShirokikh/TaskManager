@@ -52,7 +52,7 @@ public class TaskManagerController {
 
     @PutMapping("/task/update")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateTask(@RequestBody UpdateTaskRequest updateTaskRequest) {
+    public void updateTask(@RequestBody @Valid UpdateTaskRequest updateTaskRequest) {
         UpdateTaskDto updateTaskDto = TaskDtoConverter.convert(updateTaskRequest);
         manager.updateTask(updateTaskDto);
     }
@@ -65,7 +65,7 @@ public class TaskManagerController {
 
     @PostMapping("/epic/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public int createEpic(@RequestBody CreateEpicRequest createEpicRequest) {
+    public int createEpic(@RequestBody @Valid CreateEpicRequest createEpicRequest) {
         SaveEpicDto saveEpicDto = TaskDtoConverter.convert(createEpicRequest);
         return manager.saveEpic(saveEpicDto);
     }
@@ -77,7 +77,7 @@ public class TaskManagerController {
 
     @PutMapping("/epic/update")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateEpic(@RequestBody UpdateEpicRequest updateEpicRequest) {
+    public void updateEpic(@RequestBody @Valid UpdateEpicRequest updateEpicRequest) {
         UpdateEpicDto updateEpicDto = TaskDtoConverter.convert(updateEpicRequest);
         manager.updateEpic(updateEpicDto);
     }
@@ -90,7 +90,7 @@ public class TaskManagerController {
 
     @PostMapping("/subtask/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public int createSubtask(@RequestBody CreateSubtaskRequest createSubtaskRequest) {
+    public int createSubtask(@RequestBody @Valid CreateSubtaskRequest createSubtaskRequest) {
         SaveSubTaskDto saveSubTaskDto = TaskDtoConverter.convert(createSubtaskRequest);
         return manager.saveSubtask(saveSubTaskDto);
     }
@@ -102,7 +102,7 @@ public class TaskManagerController {
 
     @PutMapping("/subtask/update")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateSubtask(@RequestBody UpdateSubtaskRequest updateSubtaskRequest) {
+    public void updateSubtask(@RequestBody @Valid UpdateSubtaskRequest updateSubtaskRequest) {
         UpdateSubTaskDto updateSubTaskDto = TaskDtoConverter.convert(updateSubtaskRequest);
         manager.updateSubTask(updateSubTaskDto);
     }
