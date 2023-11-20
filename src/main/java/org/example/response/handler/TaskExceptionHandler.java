@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class TaskExceptionHandler {
     @ExceptionHandler({TaskNotFoundException.class, EpicNotFoundException.class, SubTaskNotFoundException.class})
     public ResponseEntity<ResponseErrorMessage> catchEntityNotFoundException() {
-        ResponseErrorMessage responseErrorMessage = new ResponseErrorMessage("Entity with this id not found");
+        ResponseErrorMessage responseErrorMessage = new ResponseErrorMessage();
+        responseErrorMessage.setMessage("Entity with this id not found");
         log.error(responseErrorMessage.getMessage());
         return new ResponseEntity<>(responseErrorMessage, HttpStatus.NOT_FOUND);
     }

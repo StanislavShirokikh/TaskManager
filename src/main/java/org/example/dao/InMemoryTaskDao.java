@@ -111,10 +111,10 @@ public class InMemoryTaskDao implements TaskDao {
 
     @Override
     public void removeEpicById(int id) {
-        if (!epics.containsKey(id)) {
+        Epic epic = getEpicById(id);
+        if (epic == null) {
             throw new EpicNotFoundException("ВЫ не можете удалить Epic с несуществующим ID");
         }
-        Epic epic = getEpicById(id);
         List<Integer> subTasksId = epic.getSubtasksId();
         if (!subTasksId.isEmpty()) {
             for (Integer integer : subTasksId) {
@@ -125,10 +125,10 @@ public class InMemoryTaskDao implements TaskDao {
     }
     @Override
     public void removeSubTaskById(int id) {
-        if (!subTasks.containsKey(id)) {
+        SubTask subTask = getSubTasksById(id);
+        if (subTask == null) {
             throw new SubTaskNotFoundException("Вы не можете удалить SubTask с несуществующим ID");
         }
-        SubTask subTask = getSubTasksById(id);
         int epicId = subTask.getEpicId();
         Epic epic = getEpicById(epicId);
         Set<Integer> set = new HashSet<>(epic.getSubtasksId());
