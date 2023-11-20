@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.converter.TaskDtoConverter;
 import org.example.controller.requests.CreateEpicRequest;
@@ -39,7 +40,7 @@ public class TaskManagerController {
 
     @PostMapping("/task/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public int createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+    public int createTask(@RequestBody @Valid CreateTaskRequest createTaskRequest) {
         SaveTaskDto saveTaskDto = TaskDtoConverter.convert(createTaskRequest);
         return manager.saveTask(saveTaskDto);
     }
