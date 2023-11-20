@@ -1,11 +1,8 @@
 package org.example.response;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.Data;
 
-@Getter
-@RequiredArgsConstructor
+@Data
 public class ResponseErrorMessage {
-    private final String message;
+    private String message;
 }
