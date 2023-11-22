@@ -3,14 +3,17 @@ package org.example.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.controller.requests.CreateEpicRequest;
+import org.example.controller.requests.CreateSubtaskRequest;
 import org.example.controller.requests.CreateTaskRequest;
 import org.example.controller.requests.UpdateEpicRequest;
+import org.example.controller.requests.UpdateSubtaskRequest;
 import org.example.controller.requests.UpdateTaskRequest;
 import org.example.dto.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
 import org.example.dto.SaveTaskDto;
 import org.example.dto.Status;
+import org.example.dto.SubTask;
 import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateTaskDto;
@@ -182,6 +185,96 @@ class TaskManagerControllerTest {
 
         mockMvc.perform(delete("/task-manager/epic/delete/")
                         .param("id", String.valueOf(epicId)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void createSubtask() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        CreateSubtaskRequest createSubtaskRequest = new CreateSubtaskRequest();
+        createSubtaskRequest.setName("subtask");
+        createSubtaskRequest.setDescription("subtask description");
+        createSubtaskRequest.setEpicId(epicId);
+
+        mockMvc.perform(post("/task-manager/subtask/create")
+                        .content(objectMapper.writeValueAsString(createSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void getSubtaskById() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask");
+        saveSubTaskDto.setDescription("subtask description");
+        saveSubTaskDto.setEpicId(epicId);
+
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
+        SubTask subTask = manager.getSubTasksById(subtaskId);
+
+        mockMvc.perform(get("/task-manager/subtask/get/")
+                        .param("id", String.valueOf(epicId)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(subTask.getName()))
+                .andExpect(jsonPath("$.description").value(subTask.getDescription()))
+                .andExpect(jsonPath("$.id").value(subTask.getId()))
+                .andExpect(jsonPath("$.status").value(String.valueOf(subTask.getStatus())))
+                .andExpect(jsonPath("$.epicId").value(subTask.getEpicId()));
+    }
+
+    @Test
+    public void updateSubtask() throws  Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask");
+        saveSubTaskDto.setDescription("subtask description");
+        saveSubTaskDto.setEpicId(epicId);
+
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
+        UpdateSubtaskRequest updateSubtaskRequest = new UpdateSubtaskRequest();
+        updateSubtaskRequest.setName("update subtask");
+        updateSubtaskRequest.setDescription("update subtask description");
+        updateSubtaskRequest.setStatus(Status.IN_PROGRESS);
+        updateSubtaskRequest.setEpicId(epicId);
+
+        mockMvc.perform(put("/task-manager/subtask/update")
+                        .content(objectMapper.writeValueAsString(updateSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void deleteSubtask() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask");
+        saveSubTaskDto.setDescription("subtask description");
+        saveSubTaskDto.setEpicId(epicId);
+
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
+        mockMvc.perform(delete("/task-manager/subtask/delete/")
+                        .param("id", String.valueOf(subtaskId)))
                 .andExpect(status().isOk());
     }
 }
