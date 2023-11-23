@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.converter.TaskDtoConverter;
 import org.example.controller.requests.CreateEpicRequest;
@@ -22,6 +23,7 @@ import org.example.response.CreateObjectResponse;
 import org.example.service.manager.Manager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,12 +37,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/task-manager")
 @RequiredArgsConstructor
+@Validated
 public class TaskManagerController {
     private final Manager manager;
 
     @PostMapping("/task/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateObjectResponse createTask(@RequestBody @Valid CreateTaskRequest createTaskRequest) {
+    public CreateObjectResponse createTask(@RequestBody  @Valid CreateTaskRequest createTaskRequest) {
         SaveTaskDto saveTaskDto = TaskDtoConverter.convert(createTaskRequest);
         CreateObjectResponse createObjectResponse = new CreateObjectResponse();
         createObjectResponse.setId(manager.saveTask(saveTaskDto));
@@ -48,7 +51,7 @@ public class TaskManagerController {
     }
 
     @GetMapping("/task/get/")
-    public ResponseEntity<Task> getTask(@RequestParam("id") int id) {
+    public ResponseEntity<Task> getTask(@RequestParam("id") @Min(0) int id) {
         Task task = manager.getTaskById(id);
         if (task == null) {
             return ResponseEntity.notFound().build();
