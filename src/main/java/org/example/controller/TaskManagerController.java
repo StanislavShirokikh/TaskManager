@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.converter.TaskDtoConverter;
 import org.example.controller.requests.CreateEpicRequest;
@@ -19,8 +18,8 @@ import org.example.dto.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
-import org.example.response.CreateObjectResponse;
 import org.example.service.manager.Manager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,31 +35,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/task-manager")
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Validated
 public class TaskManagerController {
     private final Manager manager;
 
     @PostMapping("/task/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateObjectResponse createTask(@RequestBody  @Valid CreateTaskRequest createTaskRequest) {
+    public int createTask(@RequestBody  @Valid CreateTaskRequest createTaskRequest) {
         SaveTaskDto saveTaskDto = TaskDtoConverter.convert(createTaskRequest);
-        CreateObjectResponse createObjectResponse = new CreateObjectResponse();
-        createObjectResponse.setId(manager.saveTask(saveTaskDto));
-        return createObjectResponse;
+        return manager.saveTask(saveTaskDto);
     }
 
     @GetMapping("/task/get/")
-    public ResponseEntity<Task> getTask(@RequestParam("id") @Min(0) int id) {
-        Task task = manager.getTaskById(id);
-        if (task == null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Task> getTask(@RequestParam("id") int id) {
         return ResponseEntity.ok(manager.getTaskById(id));
     }
 
     @PutMapping("/task/update")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void updateTask(@RequestBody @Valid UpdateTaskRequest updateTaskRequest) {
         UpdateTaskDto updateTaskDto = TaskDtoConverter.convert(updateTaskRequest);
         manager.updateTask(updateTaskDto);
@@ -74,11 +67,9 @@ public class TaskManagerController {
 
     @PostMapping("/epic/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateObjectResponse createEpic(@RequestBody @Valid CreateEpicRequest createEpicRequest) {
+    public int createEpic(@RequestBody @Valid CreateEpicRequest createEpicRequest) {
         SaveEpicDto saveEpicDto = TaskDtoConverter.convert(createEpicRequest);
-        CreateObjectResponse createObjectResponse = new CreateObjectResponse();
-        createObjectResponse.setId(manager.saveEpic(saveEpicDto));
-        return createObjectResponse;
+        return manager.saveEpic(saveEpicDto);
     }
 
     @GetMapping("/epic/get/")
@@ -87,7 +78,7 @@ public class TaskManagerController {
     }
 
     @PutMapping("/epic/update")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void updateEpic(@RequestBody @Valid UpdateEpicRequest updateEpicRequest) {
         UpdateEpicDto updateEpicDto = TaskDtoConverter.convert(updateEpicRequest);
         manager.updateEpic(updateEpicDto);
@@ -101,11 +92,9 @@ public class TaskManagerController {
 
     @PostMapping("/subtask/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateObjectResponse createSubtask(@RequestBody @Valid CreateSubtaskRequest createSubtaskRequest) {
+    public int createSubtask(@RequestBody @Valid CreateSubtaskRequest createSubtaskRequest) {
         SaveSubTaskDto saveSubTaskDto = TaskDtoConverter.convert(createSubtaskRequest);
-        CreateObjectResponse createObjectResponse = new CreateObjectResponse();
-        createObjectResponse.setId(manager.saveSubtask(saveSubTaskDto));
-        return createObjectResponse;
+        return manager.saveSubtask(saveSubTaskDto);
     }
 
     @GetMapping("/subtask/get/")
@@ -114,7 +103,7 @@ public class TaskManagerController {
     }
 
     @PutMapping("/subtask/update")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void updateSubtask(@RequestBody @Valid UpdateSubtaskRequest updateSubtaskRequest) {
         UpdateSubTaskDto updateSubTaskDto = TaskDtoConverter.convert(updateSubtaskRequest);
         manager.updateSubTask(updateSubTaskDto);
