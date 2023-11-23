@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import org.example.controller.requests.CreateEpicRequest;
 import org.example.controller.requests.CreateSubtaskRequest;
 import org.example.controller.requests.CreateTaskRequest;
@@ -15,12 +16,14 @@ import org.example.dto.Status;
 import org.example.dto.SubTask;
 import org.example.dto.Task;
 import org.example.service.manager.Manager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,7 +42,7 @@ class TaskManagerControllerTest {
     @Autowired
     private Manager manager;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
 
     @Test
@@ -48,23 +51,22 @@ class TaskManagerControllerTest {
         saveTaskDto.setName("task");
         saveTaskDto.setDescription("task description");
         int taskId = manager.saveTask(saveTaskDto);
-        Task task = manager.getTaskById(taskId);
 
         mockMvc.perform(get("/task-manager/task/get/")
                 .param("id", String.valueOf(taskId)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(task.getName()))
-                .andExpect(jsonPath("$.description").value(task.getDescription()))
-                .andExpect(jsonPath("$.id").value(task.getId()))
-                .andExpect(jsonPath("$.status").value(String.valueOf(task.getStatus())));
+                .andExpect(jsonPath("$.name").value(saveTaskDto.getName()))
+                .andExpect(jsonPath("$.description").value(saveTaskDto.getDescription()))
+                .andExpect(jsonPath("$.id").value(taskId))
+                .andExpect(jsonPath("$.status").value(String.valueOf(Status.NEW)));
     }
 
     @Test
     public void getTaskWithBadId() throws Exception {
         mockMvc.perform(get("/task-manager/task/get/")
                 .param("id", "-7"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -73,10 +75,20 @@ class TaskManagerControllerTest {
         createTaskRequest.setName("task");
         createTaskRequest.setDescription("task description");
 
-        mockMvc.perform(post("/task-manager/task/create")
+        MvcResult result = mockMvc.perform(post("/task-manager/task/create")
                 .content(objectMapper.writeValueAsString(createTaskRequest))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andReturn();
+
+        int id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+        Task task = manager.getTaskById(id);
+        Assertions.assertEquals(createTaskRequest.getName(), task.getName());
+        Assertions.assertEquals(createTaskRequest.getDescription(), task.getDescription());
+        Assertions.assertEquals(id, task.getId());
+        Assertions.assertEquals(Status.NEW, task.getStatus());
     }
 
     @Test
@@ -107,6 +119,8 @@ class TaskManagerControllerTest {
         mockMvc.perform(delete("/task-manager/task/delete/")
                         .param("id", String.valueOf(taskId)))
                 .andExpect(status().isOk());
+
+
     }
 
     @Test
