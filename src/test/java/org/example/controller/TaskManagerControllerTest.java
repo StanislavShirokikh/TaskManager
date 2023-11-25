@@ -94,6 +94,18 @@ class TaskManagerControllerTest {
     }
 
     @Test
+    public void createTaskWhenNameIsEmpty() throws Exception {
+        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+        createTaskRequest.setName("");
+        createTaskRequest.setDescription("task description");
+
+        mockMvc.perform(post("/task-manager/task/create")
+                        .content(objectMapper.writeValueAsString(createTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void updateTask() throws Exception {
         SaveTaskDto saveTaskDto = new SaveTaskDto();
         saveTaskDto.setName("task");
@@ -172,6 +184,18 @@ class TaskManagerControllerTest {
         Assertions.assertEquals(id, epic.getId());
         Assertions.assertEquals(0, epic.getSubtasksId().size());
         Assertions.assertEquals(Status.NEW, epic.getStatus());
+    }
+
+    @Test
+    public void createEpicWhenNameIsEmpty() throws Exception {
+        CreateEpicRequest createEpicRequest = new CreateEpicRequest();
+        createEpicRequest.setName("");
+        createEpicRequest.setDescription("epic description");
+
+        mockMvc.perform(post("/task-manager/epic/create")
+                        .content(objectMapper.writeValueAsString(createEpicRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -293,6 +317,36 @@ class TaskManagerControllerTest {
                         .content(objectMapper.writeValueAsString(createSubtaskRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+    @Test
+    public void createSubtaskWhenNameIsEmpty() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        CreateSubtaskRequest createSubtaskRequest = new CreateSubtaskRequest();
+        createSubtaskRequest.setName("");
+        createSubtaskRequest.setDescription("subtask description");
+        createSubtaskRequest.setEpicId(epicId);
+
+        mockMvc.perform(post("/task-manager/subtask/create")
+                        .content(objectMapper.writeValueAsString(createSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createSubtaskWhenEpicIdIsNull() throws Exception {
+        CreateSubtaskRequest createSubtaskRequest = new CreateSubtaskRequest();
+        createSubtaskRequest.setName("subtask");
+        createSubtaskRequest.setDescription("subtask description");
+        createSubtaskRequest.setEpicId(null);
+
+        mockMvc.perform(post("/task-manager/subtask/create")
+                        .content(objectMapper.writeValueAsString(createSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
