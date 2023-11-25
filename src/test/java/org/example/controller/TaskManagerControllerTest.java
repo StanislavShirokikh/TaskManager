@@ -106,7 +106,13 @@ class TaskManagerControllerTest {
         mockMvc.perform(put("/task-manager/task/update")
                 .content(objectMapper.writeValueAsString(updateTaskRequest))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
+
+        Task task = manager.getTaskById(taskId);
+        Assertions.assertEquals(updateTaskRequest.getName(), task.getName());
+        Assertions.assertEquals(updateTaskRequest.getDescription(), task.getDescription());
+        Assertions.assertEquals(taskId, task.getId());
+        Assertions.assertEquals(Status.IN_PROGRESS, task.getStatus());
     }
 
     @Test
@@ -119,8 +125,7 @@ class TaskManagerControllerTest {
         mockMvc.perform(delete("/task-manager/task/delete/")
                         .param("id", String.valueOf(taskId)))
                 .andExpect(status().isOk());
-
-
+        Assertions.assertNull(manager.getTaskById(taskId));
     }
 
     @Test
@@ -129,10 +134,21 @@ class TaskManagerControllerTest {
         createEpicRequest.setName("epic");
         createEpicRequest.setDescription("epic description");
 
-        mockMvc.perform(post("/task-manager/epic/create")
+        MvcResult result = mockMvc.perform(post("/task-manager/epic/create")
                         .content(objectMapper.writeValueAsString(createEpicRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andReturn();
+
+        int id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+        Epic epic = manager.getEpicById(id);
+        Assertions.assertEquals(createEpicRequest.getName(), epic.getName());
+        Assertions.assertEquals(createEpicRequest.getDescription(), epic.getDescription());
+        Assertions.assertEquals(id, epic.getId());
+        Assertions.assertEquals(0, epic.getSubtasksId().size());
+        Assertions.assertEquals(Status.NEW, epic.getStatus());
     }
 
     @Test
@@ -178,12 +194,14 @@ class TaskManagerControllerTest {
         updateEpicRequest.setId(epicId);
         updateEpicRequest.setName("update epic");
         updateEpicRequest.setDescription("update epic description");
-        updateEpicRequest.setStatus(Status.IN_PROGRESS);
 
         mockMvc.perform(put("/task-manager/epic/update")
                         .content(objectMapper.writeValueAsString(updateEpicRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
+
+        Epic epic = manager.getEpicById(epicId);
+
     }
 
     @Test
@@ -266,7 +284,15 @@ class TaskManagerControllerTest {
         mockMvc.perform(put("/task-manager/subtask/update")
                         .content(objectMapper.writeValueAsString(updateSubtaskRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
+
+        SubTask subTask = manager.getSubTasksById(subtaskId);
+
+        Assertions.assertEquals(updateSubtaskRequest.getName(), subTask.getName());
+        Assertions.assertEquals(updateSubtaskRequest.getDescription(), subTask.getDescription());
+        Assertions.assertEquals(subtaskId, subTask.getId());
+        Assertions.assertEquals(epicId, subTask.getEpicId());
+        Assertions.assertEquals(Status.IN_PROGRESS, subTask.getStatus());
     }
 
     @Test
@@ -286,5 +312,7 @@ class TaskManagerControllerTest {
         mockMvc.perform(delete("/task-manager/subtask/delete/")
                         .param("id", String.valueOf(subtaskId)))
                 .andExpect(status().isOk());
+
+        Assertions.assertNull(manager.getSubTasksById(subtaskId));
     }
 }

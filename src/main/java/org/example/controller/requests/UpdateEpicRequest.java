@@ -6,7 +6,6 @@ public class UpdateEpicRequest extends AbstractUpdateTaskRequest{
         return "UpdateEpicRequest{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() +
                 ", id=" + getId() +
                 '}';
     }

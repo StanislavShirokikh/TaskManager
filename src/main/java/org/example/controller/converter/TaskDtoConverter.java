@@ -49,7 +49,6 @@ public class TaskDtoConverter {
         updateEpicDto.setName(updateEpicRequest.getName());
         updateEpicDto.setDescription(updateEpicRequest.getDescription());
         updateEpicDto.setId(updateEpicRequest.getId());
-        updateEpicDto.setStatus(updateEpicRequest.getStatus());
         return updateEpicDto;
     }
 

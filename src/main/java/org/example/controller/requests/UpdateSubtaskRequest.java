@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateSubtaskRequest extends AbstractUpdateTaskRequest{
+public class UpdateSubtaskRequest extends UpdateTaskRequest{
     private Integer epicId;
 
     @Override
