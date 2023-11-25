@@ -65,7 +65,7 @@ class TaskManagerControllerTest {
     @Test
     public void getTaskWithBadId() throws Exception {
         mockMvc.perform(get("/task-manager/task/get/")
-                .param("id", "-7"))
+                .param("id", "7"))
                 .andExpect(status().isNotFound());
     }
 
@@ -178,6 +178,13 @@ class TaskManagerControllerTest {
     }
 
     @Test
+    public void getEpicWithBadId() throws Exception {
+        mockMvc.perform(get("/task-manager/epic/get/")
+                        .param("id", "7"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void updateEpic() throws  Exception {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
         saveEpicDto.setName("epic");
@@ -259,6 +266,13 @@ class TaskManagerControllerTest {
                 .andExpect(jsonPath("$.id").value(subTask.getId()))
                 .andExpect(jsonPath("$.status").value(String.valueOf(subTask.getStatus())))
                 .andExpect(jsonPath("$.epicId").value(subTask.getEpicId()));
+    }
+
+    @Test
+    public void getSubtaskWithBadId() throws Exception {
+        mockMvc.perform(get("/task-manager/subtask/get/")
+                        .param("id", "7"))
+                .andExpect(status().isNotFound());
     }
 
     @Test

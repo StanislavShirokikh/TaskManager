@@ -83,6 +83,10 @@ public class TaskManagerController {
 
     @GetMapping("/epic/get/")
     public ResponseEntity<Epic> getEpic(@RequestParam("id") int id) {
+        Epic epic = manager.getEpicById(id);
+        if (epic == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(manager.getEpicById(id));
     }
 
@@ -110,6 +114,10 @@ public class TaskManagerController {
 
     @GetMapping("/subtask/get/")
     public ResponseEntity<SubTask> getSubtask(@RequestParam("id") int id) {
+        SubTask subTask = manager.getSubTasksById(id);
+        if (subTask == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(manager.getSubTasksById(id));
     }
 
