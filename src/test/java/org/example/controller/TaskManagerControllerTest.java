@@ -25,8 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -146,6 +144,14 @@ class TaskManagerControllerTest {
     }
 
     @Test
+    public void deleteTasWithBadId() throws Exception {
+        mockMvc.perform(delete("/task-manager/task/delete/")
+                        .param("id", String.valueOf(7)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity with this id not found"));
+    }
+
+    @Test
     public void createEpic() throws  Exception {
         CreateEpicRequest createEpicRequest = new CreateEpicRequest();
         createEpicRequest.setName("epic");
@@ -261,6 +267,14 @@ class TaskManagerControllerTest {
         mockMvc.perform(delete("/task-manager/epic/delete/")
                         .param("id", String.valueOf(epicId)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteEpicWithBadId() throws Exception {
+        mockMvc.perform(delete("/task-manager/epic/delete/")
+                        .param("id", String.valueOf(5)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity with this id not found"));
     }
 
     @Test
@@ -390,5 +404,13 @@ class TaskManagerControllerTest {
                 .andExpect(status().isOk());
 
         Assertions.assertNull(manager.getSubTasksById(subtaskId));
+    }
+
+    @Test
+    public void deleteSubtaskWithBadId() throws Exception {
+        mockMvc.perform(delete("/task-manager/subtask/delete/")
+                        .param("id", String.valueOf(4)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity with this id not found"));
     }
 }
