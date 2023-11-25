@@ -55,7 +55,7 @@ class TaskManagerControllerTest {
         int taskId = manager.saveTask(saveTaskDto);
 
         mockMvc.perform(get("/task-manager/task/get/")
-                .param("id", String.valueOf(taskId)))
+                        .param("id", String.valueOf(taskId)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(saveTaskDto.getName()))
@@ -67,7 +67,7 @@ class TaskManagerControllerTest {
     @Test
     public void getTaskWithBadId() throws Exception {
         mockMvc.perform(get("/task-manager/task/get/")
-                .param("id", "7"))
+                        .param("id", "7"))
                 .andExpect(status().isNotFound());
     }
 
@@ -78,8 +78,8 @@ class TaskManagerControllerTest {
         createTaskRequest.setDescription("task description");
 
         MvcResult result = mockMvc.perform(post("/task-manager/task/create")
-                .content(objectMapper.writeValueAsString(createTaskRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(createTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andReturn();
@@ -118,8 +118,8 @@ class TaskManagerControllerTest {
         updateTaskRequest.setStatus(Status.IN_PROGRESS);
 
         mockMvc.perform(put("/task-manager/task/update")
-                .content(objectMapper.writeValueAsString(updateTaskRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(updateTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Task task = manager.getTaskById(taskId);
@@ -127,6 +127,44 @@ class TaskManagerControllerTest {
         Assertions.assertEquals(updateTaskRequest.getDescription(), task.getDescription());
         Assertions.assertEquals(taskId, task.getId());
         Assertions.assertEquals(Status.IN_PROGRESS, task.getStatus());
+    }
+
+    @Test
+    public void updateTaskWhenNameIsEmpty() throws Exception {
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        int taskId = manager.saveTask(saveTaskDto);
+
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
+        updateTaskRequest.setName("");
+        updateTaskRequest.setDescription("update description");
+        updateTaskRequest.setId(taskId);
+        updateTaskRequest.setStatus(Status.IN_PROGRESS);
+
+        mockMvc.perform(put("/task-manager/task/update")
+                        .content(objectMapper.writeValueAsString(updateTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateTaskWhenStatusIsNull() throws Exception {
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        int taskId = manager.saveTask(saveTaskDto);
+
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
+        updateTaskRequest.setName("update task");
+        updateTaskRequest.setDescription("update description");
+        updateTaskRequest.setId(taskId);
+        updateTaskRequest.setStatus(null);
+
+        mockMvc.perform(put("/task-manager/task/update")
+                        .content(objectMapper.writeValueAsString(updateTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -142,6 +180,7 @@ class TaskManagerControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Entity with this id not found"));
     }
+
     @Test
     public void deleteTask() throws Exception {
         SaveTaskDto saveTaskDto = new SaveTaskDto();
@@ -164,7 +203,7 @@ class TaskManagerControllerTest {
     }
 
     @Test
-    public void createEpic() throws  Exception {
+    public void createEpic() throws Exception {
         CreateEpicRequest createEpicRequest = new CreateEpicRequest();
         createEpicRequest.setName("epic");
         createEpicRequest.setDescription("epic description");
@@ -199,7 +238,7 @@ class TaskManagerControllerTest {
     }
 
     @Test
-    public void getEpicById() throws  Exception {
+    public void getEpicById() throws Exception {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
         saveEpicDto.setName("epic");
         saveEpicDto.setDescription("epic description");
@@ -232,7 +271,7 @@ class TaskManagerControllerTest {
     }
 
     @Test
-    public void updateEpic() throws  Exception {
+    public void updateEpic() throws Exception {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
         saveEpicDto.setName("epic");
         saveEpicDto.setDescription("epic description");
@@ -282,7 +321,25 @@ class TaskManagerControllerTest {
     }
 
     @Test
-    public void deleteEpic() throws  Exception {
+    public void updateEpicWhenNameIsEmpty() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        UpdateEpicRequest updateEpicRequest = new UpdateEpicRequest();
+        updateEpicRequest.setId(epicId);
+        updateEpicRequest.setName("");
+        updateEpicRequest.setDescription("update epic description");
+
+        mockMvc.perform(put("/task-manager/epic/update")
+                        .content(objectMapper.writeValueAsString(updateEpicRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void deleteEpic() throws Exception {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
         saveEpicDto.setName("epic");
         saveEpicDto.setDescription("epic description");
@@ -330,6 +387,7 @@ class TaskManagerControllerTest {
         Assertions.assertEquals(id, subTask.getId());
         Assertions.assertEquals(Status.NEW, subTask.getStatus());
     }
+
     @Test
     public void createSubtaskWhenNameIsEmpty() throws Exception {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
@@ -396,7 +454,7 @@ class TaskManagerControllerTest {
     }
 
     @Test
-    public void updateSubtask() throws  Exception {
+    public void updateSubtask() throws Exception {
         SaveEpicDto saveEpicDto = new SaveEpicDto();
         saveEpicDto.setName("epic");
         saveEpicDto.setDescription("epic description");
@@ -449,6 +507,87 @@ class TaskManagerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Entity with this id not found"));
+    }
+
+    @Test
+    public void updateSubtaskWhenNameIsEmpty() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask");
+        saveSubTaskDto.setDescription("subtask description");
+        saveSubTaskDto.setEpicId(epicId);
+
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
+        UpdateSubtaskRequest updateSubtaskRequest = new UpdateSubtaskRequest();
+        updateSubtaskRequest.setName("");
+        updateSubtaskRequest.setDescription("update subtask description");
+        updateSubtaskRequest.setStatus(Status.IN_PROGRESS);
+        updateSubtaskRequest.setEpicId(epicId);
+        updateSubtaskRequest.setId(subtaskId);
+
+        mockMvc.perform(put("/task-manager/subtask/update")
+                        .content(objectMapper.writeValueAsString(updateSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateSubtaskWhenEpicIdIsNull() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask");
+        saveSubTaskDto.setDescription("subtask description");
+        saveSubTaskDto.setEpicId(epicId);
+
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
+        UpdateSubtaskRequest updateSubtaskRequest = new UpdateSubtaskRequest();
+        updateSubtaskRequest.setName("update subtask");
+        updateSubtaskRequest.setDescription("update subtask description");
+        updateSubtaskRequest.setStatus(Status.IN_PROGRESS);
+        updateSubtaskRequest.setEpicId(null);
+        updateSubtaskRequest.setId(subtaskId);
+
+        mockMvc.perform(put("/task-manager/subtask/update")
+                        .content(objectMapper.writeValueAsString(updateSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateSubtaskWhenStatusIsNull() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setName("subtask");
+        saveSubTaskDto.setDescription("subtask description");
+        saveSubTaskDto.setEpicId(epicId);
+
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
+        UpdateSubtaskRequest updateSubtaskRequest = new UpdateSubtaskRequest();
+        updateSubtaskRequest.setName("update subtask");
+        updateSubtaskRequest.setDescription("update subtask description");
+        updateSubtaskRequest.setStatus(null);
+        updateSubtaskRequest.setEpicId(epicId);
+        updateSubtaskRequest.setId(subtaskId);
+
+        mockMvc.perform(put("/task-manager/subtask/update")
+                        .content(objectMapper.writeValueAsString(updateSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
