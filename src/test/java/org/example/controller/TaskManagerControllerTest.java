@@ -313,10 +313,22 @@ class TaskManagerControllerTest {
         createSubtaskRequest.setDescription("subtask description");
         createSubtaskRequest.setEpicId(epicId);
 
-        mockMvc.perform(post("/task-manager/subtask/create")
+        MvcResult result = mockMvc.perform(post("/task-manager/subtask/create")
                         .content(objectMapper.writeValueAsString(createSubtaskRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andReturn();
+
+        int id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+        SubTask subTask = manager.getSubTasksById(id);
+
+        Assertions.assertEquals(createSubtaskRequest.getName(), subTask.getName());
+        Assertions.assertEquals(createSubtaskRequest.getDescription(), subTask.getDescription());
+        Assertions.assertEquals(createSubtaskRequest.getEpicId(), subTask.getId());
+        Assertions.assertEquals(id, subTask.getId());
+        Assertions.assertEquals(Status.NEW, subTask.getStatus());
     }
     @Test
     public void createSubtaskWhenNameIsEmpty() throws Exception {
