@@ -25,6 +25,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -115,6 +119,19 @@ class TaskManagerControllerTest {
         Assertions.assertEquals(Status.IN_PROGRESS, task.getStatus());
     }
 
+    @Test
+    public void updateTaskWithBadId() throws Exception {
+        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
+        updateTaskRequest.setName("update task");
+        updateTaskRequest.setDescription("updateTask description");
+        updateTaskRequest.setId(7);
+
+        mockMvc.perform(put("/task-manager/task/update")
+                        .content(objectMapper.writeValueAsString(updateTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity with this id not found"));
+    }
     @Test
     public void deleteTask() throws Exception {
         SaveTaskDto saveTaskDto = new SaveTaskDto();
@@ -209,6 +226,29 @@ class TaskManagerControllerTest {
 
         Epic epic = manager.getEpicById(epicId);
 
+        Assertions.assertEquals(updateEpicRequest.getName(), epic.getName());
+        Assertions.assertEquals(updateEpicRequest.getDescription(), epic.getDescription());
+        Assertions.assertEquals(epicId, epic.getId());
+        Assertions.assertEquals(Status.NEW, epic.getStatus());
+
+        List<Integer> actualList = epic.getSubtasksId();
+
+        Assertions.assertTrue(actualList.contains(subtaskId));
+        Assertions.assertEquals(1, actualList.size());
+    }
+
+    @Test
+    public void updateEpicWithBadId() throws Exception {
+        UpdateEpicRequest updateEpicRequest = new UpdateEpicRequest();
+        updateEpicRequest.setId(7);
+        updateEpicRequest.setName("update epic");
+        updateEpicRequest.setDescription("update epic description");
+
+        mockMvc.perform(put("/task-manager/epic/update")
+                        .content(objectMapper.writeValueAsString(updateEpicRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity with this id not found"));
     }
 
     @Test
@@ -294,6 +334,7 @@ class TaskManagerControllerTest {
         updateSubtaskRequest.setDescription("update subtask description");
         updateSubtaskRequest.setStatus(Status.IN_PROGRESS);
         updateSubtaskRequest.setEpicId(epicId);
+        updateSubtaskRequest.setId(subtaskId);
 
         mockMvc.perform(put("/task-manager/subtask/update")
                         .content(objectMapper.writeValueAsString(updateSubtaskRequest))
@@ -307,6 +348,27 @@ class TaskManagerControllerTest {
         Assertions.assertEquals(subtaskId, subTask.getId());
         Assertions.assertEquals(epicId, subTask.getEpicId());
         Assertions.assertEquals(Status.IN_PROGRESS, subTask.getStatus());
+    }
+
+    @Test
+    public void updateSubtaskWithBadId() throws Exception {
+        SaveEpicDto saveEpicDto = new SaveEpicDto();
+        saveEpicDto.setName("epic");
+        saveEpicDto.setDescription("epic description");
+        int epicId = manager.saveEpic(saveEpicDto);
+
+        UpdateSubtaskRequest updateSubtaskRequest = new UpdateSubtaskRequest();
+        updateSubtaskRequest.setName("update subtask");
+        updateSubtaskRequest.setDescription("update subtask description");
+        updateSubtaskRequest.setStatus(Status.IN_PROGRESS);
+        updateSubtaskRequest.setEpicId(epicId);
+        updateSubtaskRequest.setId(7);
+
+        mockMvc.perform(put("/task-manager/subtask/update")
+                        .content(objectMapper.writeValueAsString(updateSubtaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity with this id not found"));
     }
 
     @Test

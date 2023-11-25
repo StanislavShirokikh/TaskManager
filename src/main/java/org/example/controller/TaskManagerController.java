@@ -62,7 +62,9 @@ public class TaskManagerController {
     @PutMapping("/task/update")
     @ResponseStatus(HttpStatus.OK)
     public void updateTask(@RequestBody @Valid UpdateTaskRequest updateTaskRequest) {
+        Task task = manager.getTaskById(updateTaskRequest.getId());
         UpdateTaskDto updateTaskDto = TaskDtoConverter.convert(updateTaskRequest);
+
         manager.updateTask(updateTaskDto);
     }
 
