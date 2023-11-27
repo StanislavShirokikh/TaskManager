@@ -196,10 +196,17 @@ class TaskManagerControllerTest {
 
     @Test
     public void deleteTasWithBadId() throws Exception {
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        manager.saveTask(saveTaskDto);
+
         mockMvc.perform(delete("/task-manager/task/delete/")
                         .param("id", String.valueOf(7)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Entity with this id not found"));
+
+
     }
 
     @Test
