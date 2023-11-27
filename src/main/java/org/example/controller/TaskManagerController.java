@@ -35,16 +35,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/task-manager")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 @Validated
 public class TaskManagerController {
     private final Manager manager;
 
     @PostMapping("/task/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public int createTask(@RequestBody  @Valid CreateTaskRequest createTaskRequest) {
+     public CreateObjectResponse createTask(@RequestBody  @Valid CreateTaskRequest createTaskRequest) {
         SaveTaskDto saveTaskDto = TaskDtoConverter.convert(createTaskRequest);
-        return manager.saveTask(saveTaskDto);
+        CreateObjectResponse createObjectResponse = new CreateObjectResponse();
+        createObjectResponse.setId(manager.saveTask(saveTaskDto));
+        return createObjectResponse;
     }
 
     @GetMapping("/task/get/")
