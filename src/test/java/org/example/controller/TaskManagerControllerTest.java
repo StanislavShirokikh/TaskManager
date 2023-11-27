@@ -173,6 +173,7 @@ class TaskManagerControllerTest {
         updateTaskRequest.setName("update task");
         updateTaskRequest.setDescription("updateTask description");
         updateTaskRequest.setId(7);
+        updateTaskRequest.setStatus(Status.IN_PROGRESS);
 
         mockMvc.perform(put("/task-manager/task/update")
                         .content(objectMapper.writeValueAsString(updateTaskRequest))
@@ -273,7 +274,7 @@ class TaskManagerControllerTest {
     @Test
     public void getEpicWithBadId() throws Exception {
         mockMvc.perform(get("/task-manager/epic/get/")
-                        .param("id", "7"))
+                        .param("id", String.valueOf(Integer.MAX_VALUE)))
                 .andExpect(status().isNotFound());
     }
 
@@ -390,7 +391,7 @@ class TaskManagerControllerTest {
 
         Assertions.assertEquals(createSubtaskRequest.getName(), subTask.getName());
         Assertions.assertEquals(createSubtaskRequest.getDescription(), subTask.getDescription());
-        Assertions.assertEquals(createSubtaskRequest.getEpicId(), subTask.getId());
+        Assertions.assertEquals(createSubtaskRequest.getEpicId(), subTask.getEpicId());
         Assertions.assertEquals(id, subTask.getId());
         Assertions.assertEquals(Status.NEW, subTask.getStatus());
     }
@@ -443,7 +444,7 @@ class TaskManagerControllerTest {
         SubTask subTask = manager.getSubTasksById(subtaskId);
 
         mockMvc.perform(get("/task-manager/subtask/get/")
-                        .param("id", String.valueOf(epicId)))
+                        .param("id", String.valueOf(subtaskId)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(subTask.getName()))
