@@ -14,7 +14,5 @@ public abstract class AbstractUpdateTaskRequest {
     @NotBlank
     private String name;
     private String description;
-    @NotNull
-    private Status status;
     private int id;
 }
