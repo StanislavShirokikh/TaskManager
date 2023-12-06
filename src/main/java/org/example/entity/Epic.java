@@ -1,7 +1,8 @@
-package org.example.dto;
+package org.example.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.entity.AbstractTask;
 
 import java.util.List;
 @Getter

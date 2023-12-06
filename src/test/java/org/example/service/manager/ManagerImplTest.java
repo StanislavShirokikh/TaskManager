@@ -1,12 +1,12 @@
 package org.example.service.manager;
 
-import org.example.dto.Epic;
+import org.example.entity.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
 import org.example.dto.SaveTaskDto;
-import org.example.dto.Status;
-import org.example.dto.SubTask;
-import org.example.dto.Task;
+import org.example.entity.Status;
+import org.example.entity.SubTask;
+import org.example.entity.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;

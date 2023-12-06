@@ -1,10 +1,8 @@
-package org.example.dao;
+package org.example.dao.in_memory;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import org.example.dto.Epic;
-import org.example.dto.SubTask;
-import org.example.dto.Task;
+import org.example.entity.Epic;
+import org.example.entity.SubTask;
+import org.example.entity.Task;
 import org.example.dao.exceptions.EpicNotFoundException;
 import org.example.dao.exceptions.SubTaskNotFoundException;
 import org.example.dao.exceptions.TaskNotFoundException;
