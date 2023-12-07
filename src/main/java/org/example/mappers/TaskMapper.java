@@ -1,6 +1,7 @@
 package org.example.mappers;
 
 import org.example.entity.AbstractTask;
+import org.example.entity.Status;
 import org.example.entity.Task;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -14,6 +15,7 @@ public class TaskMapper implements RowMapper<Task> {
         task.setId(rs.getInt("id"));
         task.setName(rs.getString("name"));
         task.setDescription(rs.getString("description"));
+        task.setStatus(Status.valueOf(rs.getString("status_name")));
         return task;
     }
 }

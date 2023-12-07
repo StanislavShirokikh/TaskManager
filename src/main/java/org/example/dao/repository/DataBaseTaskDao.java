@@ -1,28 +1,27 @@
 package org.example.dao.repository;
 
-import org.example.dao.in_memory.TaskDao;
+import lombok.RequiredArgsConstructor;
+import org.example.dao.inMemory.TaskDao;
 import org.example.entity.Epic;
 import org.example.entity.SubTask;
 import org.example.entity.Task;
 import org.example.mappers.TaskMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "DATABASE")
 public class DataBaseTaskDao implements TaskDao {
-    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public DataBaseTaskDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public int saveTask(Task task) {
-        String sql = "INSERT INTO tasks (name, description, status_id) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO task (name, description, status_id) VALUES(?, ?, ?)";
         jdbcTemplate.update(sql, task.getName(), task.getDescription(), 1);
-        return task.getId();
+        return 0;//TODO вернуть id из базы данных
     }
 
     @Override
@@ -37,9 +36,9 @@ public class DataBaseTaskDao implements TaskDao {
 
     @Override
     public Task getTaskById(int id) {
-        String sql = "SELECT FROM tasks WHERE id=?";
-        return jdbcTemplate.query(sql, new Object[]{id}, new TaskMapper())
-                .stream().findAny().orElse(null);
+        String sql = "SELECT task.id, task.name, description, status.name status_name FROM task JOIN status " +
+                "ON task.status_id = status.id  WHERE task.id=?";
+        return jdbcTemplate.queryForObject(sql, new TaskMapper(), id);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class DataBaseTaskDao implements TaskDao {
 
     @Override
     public void updateTask(Task task) {
-        jdbcTemplate.update("UPDATE tasks SET name=?, description=?, status_id=? WHERE id=?", task.getId(),
+        jdbcTemplate.update("UPDATE task SET name=?, description=?, status_id=? WHERE id=?", task.getId(),
                 task.getName(), task.getDescription(), task.getStatus());
     }
 
@@ -70,7 +69,7 @@ public class DataBaseTaskDao implements TaskDao {
 
     @Override
     public void removeTaskById(int id) {
-        jdbcTemplate.update("DELETE FROM tasks WHERE id=?", id);
+        jdbcTemplate.update("DELETE FROM task WHERE id=?", id);
     }
 
     @Override

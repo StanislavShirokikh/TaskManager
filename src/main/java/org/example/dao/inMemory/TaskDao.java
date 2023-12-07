@@ -1,4 +1,4 @@
-package org.example.dao.in_memory;
+package org.example.dao.inMemory;
 
 import org.example.entity.Epic;
 import org.example.entity.SubTask;
