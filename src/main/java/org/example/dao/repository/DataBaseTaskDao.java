@@ -50,7 +50,7 @@ public class DataBaseTaskDao implements TaskDao {
 
     @Override
     public Epic getEpicById(int id) {
-        String sql =
+        String sql = ;
         return jdbcTemplate.queryForObject(sql, new EpicRowMapper(), id, id);
     }
 

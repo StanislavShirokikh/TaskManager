@@ -1,6 +1,8 @@
 package org.example.mappers;
 
 import org.example.entity.Epic;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
