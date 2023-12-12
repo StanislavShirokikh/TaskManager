@@ -11,7 +11,14 @@ import org.example.mappers.SubtaskRowMapper;
 import org.example.mappers.TaskMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,8 +30,15 @@ public class DataBaseTaskDao implements TaskDao {
     @Override
     public int saveTask(Task task) {
         String sql = "INSERT INTO task (name, description, status_id) VALUES(?, ?, ?)";
-        jdbcTemplate.update(sql, task.getName(), task.getDescription(), 1);
-        return 0;//TODO вернуть id из базы данных
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[] {"id"});
+            ps.setString(1, task.getName());
+            ps.setString(2, task.getDescription());
+            ps.setInt(3, 1);
+            return ps;
+        }, keyHolder);
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     @Override
@@ -50,8 +64,9 @@ public class DataBaseTaskDao implements TaskDao {
 
     @Override
     public Epic getEpicById(int id) {
-        String sql = ;
-        return jdbcTemplate.queryForObject(sql, new EpicRowMapper(), id, id);
+//        String sql = ;
+//        return jdbcTemplate.queryForObject(sql, new EpicRowMapper(), id, id);
+        return null;
     }
 
     @Override
