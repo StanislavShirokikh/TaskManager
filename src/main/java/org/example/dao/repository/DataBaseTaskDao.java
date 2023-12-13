@@ -2,6 +2,9 @@ package org.example.dao.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.dao.exceptions.EpicNotFoundException;
+import org.example.dao.exceptions.SubTaskNotFoundException;
+import org.example.dao.exceptions.TaskNotFoundException;
 import org.example.dao.inMemory.TaskDao;
 import org.example.entity.Epic;
 import org.example.entity.SubTask;
@@ -82,7 +85,13 @@ public class DataBaseTaskDao implements TaskDao {
     public Task getTaskById(int id) {
         String sql = "SELECT task.id, task.name, description, status.name status_name FROM task JOIN status " +
                 "ON task.status_id = status.id  WHERE task.id=?";
-        return jdbcTemplate.queryForObject(sql, new TaskMapper(), id);
+        Task task = null;
+        try {
+            task = jdbcTemplate.queryForObject(sql, new TaskMapper(), id);
+        } catch (Exception e) {
+            log.info("Task with id {} not found", id);
+        }
+        return task;
     }
 
     @Override
@@ -103,48 +112,91 @@ public class DataBaseTaskDao implements TaskDao {
     public SubTask getSubTasksById(int id) {
         String sql = "SELECT subtask.id, subtask.name, subtask.description, subtask.epic_id, status.name status_name " +
                 "FROM subtask JOIN status ON subtask.status_id = status.id WHERE subtask.id=?";
-        return jdbcTemplate.queryForObject(sql, new SubtaskRowMapper(), id);
+        SubTask subTask = null;
+        try {
+            subTask = jdbcTemplate.queryForObject(sql, new SubtaskRowMapper(), id);
+        } catch (Exception e) {
+            log.info("Subtask with id {} not found", id);
+        }
+        return subTask;
     }
 
     @Override
     public void updateTask(Task task) {
-        jdbcTemplate.update("UPDATE task SET name=?, description=?, status_id=(SELECT id FROM status WHERE name=?) " +
-                        "WHERE id=?",
-                task.getName(), task.getDescription(), String.valueOf(task.getStatus()), task.getId());
+        if (doesTaskIdExist(task.getId())) {
+            jdbcTemplate.update("UPDATE task SET name=?, description=?, status_id=(SELECT id FROM status WHERE name=?) " +
+                            "WHERE id=?",
+                    task.getName(), task.getDescription(), String.valueOf(task.getStatus()), task.getId());
+        } else {
+            throw new TaskNotFoundException("Вы не можете обновить Task с несуществующим Id");
+        }
     }
 
     @Override
     public void updateEpic(Epic epic) {
-        String sql = "UPDATE epic SET name=?, description=? WHERE id=?";
-        jdbcTemplate.update(sql, epic.getName(), epic.getDescription(), epic.getId());
+        if (doesEpicIdExist(epic.getId())) {
+            String sql = "UPDATE epic SET name=?, description=? WHERE id=?";
+            jdbcTemplate.update(sql, epic.getName(), epic.getDescription(), epic.getId());
+        } else {
+            throw new EpicNotFoundException("Вы не можете обновить Epic с несуществующим Id");
+        }
     }
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        String sql = "UPDATE subtask SET name=?, description=?, status_id=(SELECT id FROM status WHERE name=?)," +
-                " epic_id=? WHERE id=? ";
-        jdbcTemplate.update(sql, subTask.getName(), subTask.getDescription(), subTask.getStatus(), subTask.getEpicId(),
-                subTask.getId());
+        if (doesSubtaskIdExist(subTask.getId())) {
+            String sql = "UPDATE subtask SET name=?, description=?, status_id=(SELECT id FROM status WHERE name=?)," +
+                    " epic_id=? WHERE id=? ";
+            jdbcTemplate.update(sql, subTask.getName(), subTask.getDescription(), String.valueOf(subTask.getStatus()), subTask.getEpicId(),
+                    subTask.getId());
+        } else {
+            throw new SubTaskNotFoundException("Вы не можете обновить Subtask с несуществующим Id");
+        }
     }
 
     @Override
     public void removeTaskById(int id) {
-        jdbcTemplate.update("DELETE FROM task WHERE id=?", id);
+        if (doesTaskIdExist(id)) {
+            jdbcTemplate.update("DELETE FROM task WHERE id=?", id);
+        } else {
+            throw new TaskNotFoundException("Вы не можете удалить Task с несуществующим Id");        }
     }
 
     @Override
     public void removeEpicById(int id) {
-        String sql1 = "DELETE FROM epic WHERE id=?";
-        jdbcTemplate.update(sql1, id);
+        if (doesEpicIdExist(id)) {
+            jdbcTemplate.update("DELETE FROM epic WHERE id=?", id);
+        } else {
+            throw new EpicNotFoundException("Вs не можете удалить Epic с несуществующим Id");
+        }
     }
 
     @Override
     public void removeSubTaskById(int id) {
-        String sql = "DELETE FROM subtask WHERE id=?";
-        jdbcTemplate.update(sql, id);
+        if (doesSubtaskIdExist(id)) {
+            jdbcTemplate.update("DELETE FROM subtask WHERE id=?", id);
+        } else {
+            throw new SubTaskNotFoundException("Вы не можете удалить SubTask с несуществующим Id");
+        }
     }
     private List<Integer> getSubtaskIdByEpicId(int epicId) {
-        String sql = "SELECT id FROM subtask WHERE epic_id=?";
-        return jdbcTemplate.queryForList(sql, Integer.class, epicId);
+        return jdbcTemplate.queryForList("SELECT id FROM subtask WHERE epic_id=?", Integer.class, epicId);
     }
+
+    private boolean doesTaskIdExist(int id) {
+        int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM task WHERE id=?", Integer.class, id);
+        return count == 1;
+    }
+
+    private boolean doesEpicIdExist(int id) {
+        int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM epic WHERE id=?", Integer.class, id);
+        return count == 1;
+    }
+
+    private boolean doesSubtaskIdExist(int id) {
+        int count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM subtask WHERE id=?", Integer.class, id);
+        return count == 1;
+    }
+
+
 }
