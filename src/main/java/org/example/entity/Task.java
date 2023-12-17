@@ -1,4 +1,6 @@
-package org.example.dto;
+package org.example.entity;
+
+import org.example.entity.AbstractTask;
 
 public class Task extends AbstractTask {
     @Override

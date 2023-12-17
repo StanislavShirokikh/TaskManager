@@ -1,8 +1,8 @@
-package org.example.dao;
+package org.example.dao.inMemory;
 
-import org.example.dto.*;
-
-import java.util.Map;
+import org.example.entity.Epic;
+import org.example.entity.SubTask;
+import org.example.entity.Task;
 
 public interface TaskDao {
     int saveTask(Task task);

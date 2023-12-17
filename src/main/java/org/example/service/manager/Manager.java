@@ -1,8 +1,9 @@
 package org.example.service.manager;
 
 import org.example.dto.*;
-
-import java.util.Map;
+import org.example.entity.Epic;
+import org.example.entity.SubTask;
+import org.example.entity.Task;
 
 public interface Manager {
     int saveTask(SaveTaskDto saveTaskDto);

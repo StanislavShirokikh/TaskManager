@@ -2,6 +2,7 @@ package org.example.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.entity.Status;
 
 @Getter
 @Setter

@@ -1,10 +1,9 @@
 package org.example.controller.requests;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.dto.Status;
+import org.example.entity.Status;
 @Getter
 @Setter
 public class UpdateTaskRequest extends AbstractUpdateTaskRequest {

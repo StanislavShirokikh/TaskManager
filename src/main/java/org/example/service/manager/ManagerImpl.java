@@ -2,19 +2,20 @@ package org.example.service.manager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.dao.TaskDao;
-import org.example.dto.Epic;
+import org.example.dao.inMemory.TaskDao;
+import org.example.entity.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
 import org.example.dto.SaveTaskDto;
-import org.example.dto.Status;
-import org.example.dto.SubTask;
-import org.example.dto.Task;
+import org.example.entity.Status;
+import org.example.entity.SubTask;
+import org.example.entity.Task;
 import org.example.dto.UpdateEpicDto;
 import org.example.dto.UpdateSubTaskDto;
 import org.example.dto.UpdateTaskDto;
 import org.example.service.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,9 +24,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 @Slf4j
 public class ManagerImpl implements Manager {
+
     private final TaskDao taskDao;
 
     @Override

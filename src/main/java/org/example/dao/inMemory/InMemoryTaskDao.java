@@ -1,14 +1,13 @@
-package org.example.dao;
+package org.example.dao.inMemory;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import org.example.dto.Epic;
-import org.example.dto.SubTask;
-import org.example.dto.Task;
+import org.example.entity.Epic;
+import org.example.entity.SubTask;
+import org.example.entity.Task;
 import org.example.dao.exceptions.EpicNotFoundException;
 import org.example.dao.exceptions.SubTaskNotFoundException;
 import org.example.dao.exceptions.TaskNotFoundException;
 import org.example.service.IdGenerator;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 @Repository
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "IN_MEMORY")
 public class InMemoryTaskDao implements TaskDao {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
