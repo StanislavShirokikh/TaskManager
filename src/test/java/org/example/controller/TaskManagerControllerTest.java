@@ -8,6 +8,7 @@ import org.example.controller.requests.CreateTaskRequest;
 import org.example.controller.requests.UpdateEpicRequest;
 import org.example.controller.requests.UpdateSubtaskRequest;
 import org.example.controller.requests.UpdateTaskRequest;
+import org.example.dto.UpdateSubTaskDto;
 import org.example.entity.Epic;
 import org.example.dto.SaveEpicDto;
 import org.example.dto.SaveSubTaskDto;
