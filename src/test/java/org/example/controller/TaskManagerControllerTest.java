@@ -173,6 +173,7 @@ class TaskManagerControllerTest {
         updateTaskRequest.setName("update task");
         updateTaskRequest.setDescription("updateTask description");
         updateTaskRequest.setId(7);
+        updateTaskRequest.setStatus(Status.IN_PROGRESS);
 
         mockMvc.perform(put("/task-manager/task/update")
                         .content(objectMapper.writeValueAsString(updateTaskRequest))
@@ -196,10 +197,17 @@ class TaskManagerControllerTest {
 
     @Test
     public void deleteTasWithBadId() throws Exception {
+        SaveTaskDto saveTaskDto = new SaveTaskDto();
+        saveTaskDto.setName("task");
+        saveTaskDto.setDescription("task description");
+        manager.saveTask(saveTaskDto);
+
         mockMvc.perform(delete("/task-manager/task/delete/")
                         .param("id", String.valueOf(7)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Entity with this id not found"));
+
+
     }
 
     @Test
@@ -266,7 +274,7 @@ class TaskManagerControllerTest {
     @Test
     public void getEpicWithBadId() throws Exception {
         mockMvc.perform(get("/task-manager/epic/get/")
-                        .param("id", "7"))
+                        .param("id", String.valueOf(Integer.MAX_VALUE)))
                 .andExpect(status().isNotFound());
     }
 
@@ -345,9 +353,18 @@ class TaskManagerControllerTest {
         saveEpicDto.setDescription("epic description");
         int epicId = manager.saveEpic(saveEpicDto);
 
+        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
+        saveSubTaskDto.setEpicId(epicId);
+        saveSubTaskDto.setName("subtask 1");
+        saveSubTaskDto.setDescription("subtask description 1");
+        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+
         mockMvc.perform(delete("/task-manager/epic/delete/")
                         .param("id", String.valueOf(epicId)))
                 .andExpect(status().isOk());
+
+        Assertions.assertNull(manager.getSubTasksById(subtaskId));
+        Assertions.assertNull(manager.getEpicById(epicId));
     }
 
     @Test
@@ -383,7 +400,7 @@ class TaskManagerControllerTest {
 
         Assertions.assertEquals(createSubtaskRequest.getName(), subTask.getName());
         Assertions.assertEquals(createSubtaskRequest.getDescription(), subTask.getDescription());
-        Assertions.assertEquals(createSubtaskRequest.getEpicId(), subTask.getId());
+        Assertions.assertEquals(createSubtaskRequest.getEpicId(), subTask.getEpicId());
         Assertions.assertEquals(id, subTask.getId());
         Assertions.assertEquals(Status.NEW, subTask.getStatus());
     }
@@ -436,7 +453,7 @@ class TaskManagerControllerTest {
         SubTask subTask = manager.getSubTasksById(subtaskId);
 
         mockMvc.perform(get("/task-manager/subtask/get/")
-                        .param("id", String.valueOf(epicId)))
+                        .param("id", String.valueOf(subtaskId)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(subTask.getName()))
@@ -480,12 +497,14 @@ class TaskManagerControllerTest {
                 .andExpect(status().isOk());
 
         SubTask subTask = manager.getSubTasksById(subtaskId);
+        Epic epic = manager.getEpicById(epicId);
 
         Assertions.assertEquals(updateSubtaskRequest.getName(), subTask.getName());
         Assertions.assertEquals(updateSubtaskRequest.getDescription(), subTask.getDescription());
         Assertions.assertEquals(subtaskId, subTask.getId());
         Assertions.assertEquals(epicId, subTask.getEpicId());
         Assertions.assertEquals(Status.IN_PROGRESS, subTask.getStatus());
+        Assertions.assertEquals(Status.IN_PROGRESS, epic.getStatus());
     }
 
     @Test
@@ -597,18 +616,35 @@ class TaskManagerControllerTest {
         saveEpicDto.setDescription("epic description");
         int epicId = manager.saveEpic(saveEpicDto);
 
-        SaveSubTaskDto saveSubTaskDto = new SaveSubTaskDto();
-        saveSubTaskDto.setName("subtask");
-        saveSubTaskDto.setDescription("subtask description");
-        saveSubTaskDto.setEpicId(epicId);
+        SaveSubTaskDto saveSubTaskDto1 = new SaveSubTaskDto();
+        saveSubTaskDto1.setName("subtask");
+        saveSubTaskDto1.setDescription("subtask description");
+        saveSubTaskDto1.setEpicId(epicId);
 
-        int subtaskId = manager.saveSubtask(saveSubTaskDto);
+        SaveSubTaskDto saveSubTaskDto2 = new SaveSubTaskDto();
+        saveSubTaskDto2.setName("subtask");
+        saveSubTaskDto2.setDescription("subtask description");
+        saveSubTaskDto2.setEpicId(epicId);
+
+        int subtaskId1 = manager.saveSubtask(saveSubTaskDto1);
+        manager.saveSubtask(saveSubTaskDto2);
+
+        UpdateSubTaskDto updateSubTaskDtoInProgress = new UpdateSubTaskDto();
+        updateSubTaskDtoInProgress.setStatus(Status.IN_PROGRESS);
+        updateSubTaskDtoInProgress.setName("subtask update");
+        updateSubTaskDtoInProgress.setDescription("description subtask");
+        updateSubTaskDtoInProgress.setId(subtaskId1);
+
+        manager.updateSubTask(updateSubTaskDtoInProgress);
 
         mockMvc.perform(delete("/task-manager/subtask/delete/")
-                        .param("id", String.valueOf(subtaskId)))
+                        .param("id", String.valueOf(subtaskId1)))
                 .andExpect(status().isOk());
 
-        Assertions.assertNull(manager.getSubTasksById(subtaskId));
+        Epic epic = manager.getEpicById(epicId);
+
+        Assertions.assertNull(manager.getSubTasksById(subtaskId1));
+        Assertions.assertEquals(Status.NEW, epic.getStatus());
     }
 
     @Test
