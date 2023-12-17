@@ -23,7 +23,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ManagerImplTest {
+class ManagerTest {
     @Autowired
     private Manager manager;
 
